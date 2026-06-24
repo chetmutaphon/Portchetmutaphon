@@ -1,0 +1,60 @@
+/* Chet Mutaphon — alternate theme scopes */
+[data-theme="warm-editorial"] {
+  --font-body: var(--font-dm-sans);
+  --font-heading: var(--font-dm-serif);
+  --heading-weight: 400;
+  --bg: #faf8f5;
+  --bg-alt: #f0ece4;
+  --card: #f0ece4;
+  --text: #2c2825;
+  --text-secondary: #8a8279;
+  --accent: #8a7054;
+  --border: #e0dbd3;
+  --nav-bg: rgba(250, 248, 245, 0.85);
+  --radius: 8px;
+  --hero-size: clamp(44px, 7vw, 76px);
+  --hero-align: left;
+  --hero-items: flex-start;
+  --section-gap: 100px;
+  --gallery-cols: 3;
+}
+
+[data-theme="cool-studio"] {
+  --font-body: var(--font-space-grotesk);
+  --font-heading: var(--font-space-grotesk);
+  --heading-weight: 600;
+  --bg: #f5f7fa;
+  --bg-alt: #e8ecf2;
+  --card: #e8ecf2;
+  --text: #1a1e2e;
+  --text-secondary: #6b7280;
+  --accent: #4361ee;
+  --border: #d5dbe5;
+  --nav-bg: rgba(245, 247, 250, 0.82);
+  --radius: 14px;
+  --hero-size: clamp(44px, 7vw, 72px);
+  --hero-align: center;
+  --hero-items: center;
+  --section-gap: 100px;
+  --gallery-cols: 4;
+}
+
+[data-theme="ink-paper"] {
+  --font-body: var(--font-syne);
+  --font-heading: var(--font-syne);
+  --heading-weight: 800;
+  --bg: #ffffff;
+  --bg-alt: #f0f0f0;
+  --card: #f0f0f0;
+  --text: #000000;
+  --text-secondary: #555555;
+  --accent: #000000;
+  --border: #e0e0e0;
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --radius: 0px;
+  --hero-size: clamp(52px, 9vw, 100px);
+  --hero-align: left;
+  --hero-items: flex-start;
+  --section-gap: 140px;
+  --gallery-cols: 3;
+}

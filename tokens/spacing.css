@@ -1,0 +1,37 @@
+/* Chet Mutaphon — spacing, layout, radius, motion */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 10px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --section-gap: 120px;
+  --section-gap-compact: 80px;
+  --section-gap-spacious: 160px;
+  --content-max: 1120px;
+  --content-pad: 48px;
+  --content-pad-mobile: 24px;
+  --nav-height: 56px;
+  --nav-pad: 48px;
+  --gallery-gap: 20px;
+  --video-gap: 24px;
+  --gallery-cols: 3;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-pill: 100px;
+  --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.08);
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-reveal: 0.75s;
+  --dur-theme: 0.5s;
+  --dur-nav: 0.35s;
+  --dur-hover: 0.4s;
+  --dur-tag: 0.3s;
+}
