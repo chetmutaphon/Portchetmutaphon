@@ -1,0 +1,25 @@
+<!-- @dsCard group="Brand" viewport="700x220" name="Imagery & placeholder" subtitle="Warm food/lifestyle photography · diagonal-hatch empty state" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--text); }
+  .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 24px; }
+  .tile { aspect-ratio: 4/3; border-radius: 14px; overflow: hidden; position: relative; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+        background: repeating-linear-gradient(-45deg, transparent, transparent 10px, oklch(0.9 0.015 40) 10px, oklch(0.9 0.015 40) 20px), var(--card); }
+  .mono { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; color: var(--text-secondary); font-weight: 500; }
+  .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="tile"><img src="../assets/imagery/Photo3.jpg" alt="food photography" /></div>
+  <div class="tile"><img src="../assets/imagery/AW1.jpg" alt="menu artwork" /></div>
+  <div class="tile ph"><span class="mono">FOOD</span><span class="hint">drop image here</span></div>
+</div>
+</body>
+</html>

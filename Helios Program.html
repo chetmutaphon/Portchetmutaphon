@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HELIOS PROGRAM — Return to the Sun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Space+Mono:wght@400;700&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f1ebdf;
+    --paper-2: #e7dccb;
+    --ink: #1b1814;
+    --ink-soft: #6a6051;
+    --helios: #de4f1d;
+    --helios-deep: #b3380f;
+    --sky: #2f5d6e;
+    --line: rgba(27, 24, 20, 0.16);
+    --line-soft: rgba(27, 24, 20, 0.08);
+    --display: "Big Shoulders Display", sans-serif;
+    --mono: "Space Mono", monospace;
+    --body: "Spline Sans", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--helios); color: var(--paper); }
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-track { background: var(--paper-2); }
+  ::-webkit-scrollbar-thumb { background: var(--ink); }
+
+  /* faint engineering grid + grain over everything */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 2; pointer-events: none;
+    opacity: 0.5; mix-blend-mode: multiply;
+  }
+
+  .mono { font-family: var(--mono); }
+  .lbl {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+
+  /* ---------- FRAME ---------- */
+  .frame {
+    position: fixed; inset: 18px; z-index: 5; pointer-events: none;
+    border: 1.5px solid var(--ink);
+  }
+  .reg { position: absolute; width: 26px; height: 26px; }
+  .reg::before, .reg::after { content: ""; position: absolute; background: var(--ink); }
+  .reg::before { left: 50%; top: 0; width: 1.5px; height: 100%; transform: translateX(-50%); }
+  .reg::after { top: 50%; left: 0; height: 1.5px; width: 100%; transform: translateY(-50%); }
+  .reg.tl { top: -13px; left: -13px; } .reg.tr { top: -13px; right: -13px; }
+  .reg.bl { bottom: -13px; left: -13px; } .reg.br { bottom: -13px; right: -13px; }
+
+  /* ---------- SHELL ---------- */
+  .shell { position: relative; z-index: 10; padding: 0 48px; max-width: 1440px; margin: 0 auto; }
+
+  /* ---------- TOPBAR ---------- */
+  header {
+    position: relative; z-index: 10;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    padding: 30px 48px 0; max-width: 1440px; margin: 0 auto;
+  }
+  .wordmark { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: 0.04em; }
+  .wordmark .sun { width: 15px; height: 15px; border-radius: 50%; background: var(--helios); box-shadow: 0 0 0 3px var(--paper), 0 0 0 4.5px var(--helios); }
+  nav { display: flex; gap: 30px; justify-self: center; }
+  nav a {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; position: relative; padding: 4px 0;
+  }
+  nav a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 1.5px; background: var(--helios); transition: width 0.3s cubic-bezier(0.22,1,0.36,1); }
+  nav a:hover { color: var(--helios); }
+  nav a:hover::after { width: 100%; }
+  .clock { justify-self: end; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; }
+  .clock .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--helios); animation: blink 1.6s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  /* ---------- HERO ---------- */
+  .hero { position: relative; z-index: 10; min-height: calc(100vh - 70px); display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 20px; }
+  .hero-l { position: relative; }
+  .kicker { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+  .kicker .bar { width: 46px; height: 1.5px; background: var(--helios); }
+  h1 { font-family: var(--display); font-weight: 900; line-height: 0.84; letter-spacing: -0.01em; font-size: clamp(58px, 9.5vw, 150px); text-transform: uppercase; }
+  h1 .em { color: var(--helios); font-style: italic; font-weight: 800; }
+  .line-mask { overflow: hidden; display: block; }
+  .line-mask > span { display: block; transform: translateY(110%); animation: riseIn 0.95s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .line-mask:nth-child(1) > span { animation-delay: 0.15s; }
+  .line-mask:nth-child(2) > span { animation-delay: 0.27s; }
+  .line-mask:nth-child(3) > span { animation-delay: 0.39s; }
+  @keyframes riseIn { to { transform: translateY(0); } }
+
+  .lede { max-width: 430px; margin-top: 32px; font-size: 16.5px; line-height: 1.6; color: var(--ink-soft); opacity: 0; animation: fadeUp 0.9s ease 0.7s forwards; }
+  .lede b { color: var(--ink); font-weight: 600; }
+  .cta { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.9s ease 0.85s forwards; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .btn {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 15px 26px; border: 1.5px solid var(--ink); cursor: pointer; text-decoration: none; color: var(--ink);
+    background: transparent; display: inline-flex; align-items: center; gap: 10px; transition: all 0.25s ease;
+  }
+  .btn .arr { transition: transform 0.25s ease; }
+  .btn:hover .arr { transform: translateX(5px); }
+  .btn--solid { background: var(--helios); border-color: var(--helios); color: var(--paper); }
+  .btn--solid:hover { background: var(--helios-deep); border-color: var(--helios-deep); }
+  .btn--ghost:hover { background: var(--ink); color: var(--paper); }
+
+  /* coordinate readouts down the left edge */
+  .coords { position: absolute; left: -2px; bottom: 4px; display: flex; gap: 26px; opacity: 0; animation: fadeUp 0.9s ease 1s forwards; }
+  .coords div { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.05em; }
+  .coords b { display: block; color: var(--ink); font-size: 15px; letter-spacing: 0.02em; margin-top: 3px; }
+
+  /* ---------- SUN DISC ---------- */
+  .hero-r { position: relative; height: 560px; display: flex; align-items: center; justify-content: center; }
+  .disc-wrap { position: relative; width: 460px; height: 460px; opacity: 0; animation: discIn 1.3s cubic-bezier(0.22,1,0.36,1) 0.4s forwards; }
+  @keyframes discIn { from { opacity: 0; transform: scale(0.82) rotate(-12deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+  .rays {
+    position: absolute; inset: -60px; border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, var(--helios) 0deg 1.4deg, transparent 1.4deg 9deg);
+    -webkit-mask: radial-gradient(circle, transparent 47%, #000 47.4%, #000 60%, transparent 61%);
+    mask: radial-gradient(circle, transparent 47%, #000 47.4%, #000 60%, transparent 61%);
+    opacity: 0.85; animation: spin 60s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .disc {
+    position: absolute; inset: 70px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 32%, #f6a14e 0%, var(--helios) 46%, var(--helios-deep) 100%);
+    box-shadow: inset 0 0 60px rgba(120,30,0,0.45), 0 24px 60px rgba(160,60,20,0.28);
+  }
+  .disc::after { /* terminator shading */
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background: linear-gradient(125deg, transparent 52%, rgba(70,20,0,0.32) 100%);
+  }
+  .ring { position: absolute; border: 1.5px dashed var(--line); border-radius: 50%; }
+  .ring.r1 { inset: 18px; }
+  .ring.r2 { inset: -34px; border-color: rgba(27,24,20,0.12); }
+  .orbit { position: absolute; inset: -34px; animation: spin 16s linear infinite; }
+  .craft { position: absolute; top: -5px; left: 50%; width: 11px; height: 11px; margin-left: -5.5px; background: var(--ink); border-radius: 50%; box-shadow: 0 0 0 4px var(--paper); }
+  .craft::after { content: ""; position: absolute; inset: 3px; background: var(--paper); border-radius: 50%; }
+  .disc-tag { position: absolute; top: 4px; right: -6px; transform: rotate(0deg); text-align: right; }
+  .disc-tag .lbl { display: block; }
+  .leader { position: absolute; right: 8px; top: 38%; width: 120px; height: 1.5px; background: var(--ink); }
+  .leader::before { content: ""; position: absolute; left: 0; top: -3px; width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--paper); }
+  .leader .t { position: absolute; right: 0; top: -34px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); text-align: right; line-height: 1.5; }
+
+  /* ---------- TICKER ---------- */
+  .ticker { position: relative; z-index: 10; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); overflow: hidden; background: var(--ink); margin-top: 6px; }
+  .ticker-track { display: flex; gap: 0; white-space: nowrap; animation: marquee 38s linear infinite; }
+  .ticker-track span { font-family: var(--mono); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); padding: 13px 26px; display: inline-flex; align-items: center; gap: 26px; }
+  .ticker-track span i { color: var(--helios); font-style: normal; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ---------- MANIFEST ---------- */
+  section.block { position: relative; z-index: 10; max-width: 1440px; margin: 0 auto; padding: 96px 48px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1.5px solid var(--ink); padding-bottom: 16px; margin-bottom: 54px; }
+  .sec-head h2 { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 4vw, 50px); text-transform: uppercase; letter-spacing: -0.01em; }
+  .sec-head .idx { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; color: var(--helios); }
+  .manifest { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .stat { padding: 6px 28px; border-left: 1.5px solid var(--line); }
+  .stat:first-child { border-left: none; padding-left: 0; }
+  .stat .num { font-family: var(--display); font-weight: 800; font-size: clamp(46px, 6vw, 82px); line-height: 0.9; letter-spacing: -0.02em; }
+  .stat .num .u { font-size: 0.4em; color: var(--helios); margin-left: 4px; }
+  .stat .cap { margin-top: 14px; }
+
+  /* ---------- FLEET ---------- */
+  .fleet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .craft-card { border: 1.5px solid var(--ink); background: var(--paper); display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease; }
+  .craft-card:hover { transform: translateY(-6px); box-shadow: 10px 12px 0 var(--ink); }
+  .craft-card .top { padding: 22px 22px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .craft-card .code { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--helios); }
+  .craft-card .status { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+  .craft-card .status .d { width: 6px; height: 6px; border-radius: 50%; background: var(--sky); }
+  .craft-viz { height: 168px; margin: 18px 0 4px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .craft-viz svg { width: 120px; height: 120px; }
+  .craft-card h3 { font-family: var(--display); font-weight: 800; font-size: 34px; text-transform: uppercase; padding: 0 22px; line-height: 0.95; }
+  .craft-card .spec { padding: 16px 22px 24px; }
+  .spec .r { display: flex; justify-content: space-between; padding: 9px 0; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .spec .r:first-child { border-top: none; }
+  .spec .r .k { color: var(--ink-soft); letter-spacing: 0.08em; }
+  .spec .r .v { color: var(--ink); font-weight: 700; }
+
+  /* ---------- STATEMENT ---------- */
+  .statement { position: relative; z-index: 10; background: var(--ink); color: var(--paper); padding: 110px 48px; }
+  .statement .in { max-width: 1100px; margin: 0 auto; }
+  .statement .lbl { color: var(--helios); }
+  .statement p { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 64px); line-height: 1.04; text-transform: uppercase; letter-spacing: -0.01em; margin-top: 26px; }
+  .statement p em { color: var(--helios); font-style: italic; }
+
+  /* ---------- FOOTER ---------- */
+  footer { position: relative; z-index: 10; max-width: 1440px; margin: 0 auto; padding: 72px 48px 90px; display: grid; grid-template-columns: auto 1fr auto; gap: 48px; align-items: center; }
+  .patch { width: 132px; height: 132px; position: relative; }
+  .patch .pt { position: absolute; inset: 0; animation: spin 26s linear infinite; }
+  .patch .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .patch .center .s { width: 30px; height: 30px; border-radius: 50%; background: var(--helios); margin-bottom: 6px; }
+  .patch .center .y { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; color: var(--ink); }
+  .foot-mid { font-family: var(--display); font-weight: 800; font-size: clamp(28px, 4vw, 52px); text-transform: uppercase; line-height: 0.92; }
+  .foot-mid span { color: var(--helios); }
+  .foot-r { text-align: right; }
+  .foot-r a { display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--ink); text-decoration: none; padding: 5px 0; transition: color 0.2s; }
+  .foot-r a:hover { color: var(--helios); }
+  .copyline { max-width: 1440px; margin: 0 auto; padding: 0 48px 40px; display: flex; justify-content: space-between; }
+  .copyline span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--ink-soft); text-transform: uppercase; }
+
+  @media (max-width: 1000px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 30px; min-height: 0; }
+    .hero-r { height: 380px; order: -1; }
+    .disc-wrap { width: 340px; height: 340px; }
+    .coords { position: static; margin-top: 36px; }
+    .manifest { grid-template-columns: repeat(2, 1fr); gap: 30px 0; }
+    .fleet { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; text-align: left; gap: 30px; }
+    .foot-r { text-align: left; }
+  }
+  @media (max-width: 640px) {
+    .shell, header, .hero, section.block, footer, .copyline, .statement { padding-left: 22px; padding-right: 22px; }
+    nav, .clock { display: none; }
+    header { grid-template-columns: 1fr; }
+    .manifest { grid-template-columns: 1fr; }
+    .stat { border-left: none; padding-left: 0; border-top: 1.5px solid var(--line); padding-top: 20px; }
+  }
+</style>
+</head>
+<body>
+  <svg class="grain"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#n)" opacity="0.32"/></svg>
+
+  <div class="frame">
+    <span class="reg tl"></span><span class="reg tr"></span><span class="reg bl"></span><span class="reg br"></span>
+  </div>
+
+  <header>
+    <div class="wordmark"><span class="sun"></span>HELIOS&nbsp;PROGRAM</div>
+    <nav>
+      <a href="#manifest">Missions</a>
+      <a href="#fleet">Fleet</a>
+      <a href="#stmt">Doctrine</a>
+      <a href="#foot">Archive</a>
+    </nav>
+    <div class="clock"><span class="dot"></span>MISSION&nbsp;CLOCK&nbsp;<b id="clk">T+ 00:00:00</b></div>
+  </header>
+
+  <div class="shell">
+    <div class="hero">
+      <div class="hero-l">
+        <div class="kicker"><span class="bar"></span><span class="lbl">Est. 1971 · Reactivated 2026 · Cape Meridian</span></div>
+        <h1>
+          <span class="line-mask"><span>Return</span></span>
+          <span class="line-mask"><span>to the <span class="em">Sun</span></span></span>
+        </h1>
+        <p class="lede">A privately operated solar expedition agency building crewed vehicles for the inner heliosphere. We fly toward the thing everyone else flies away from — <b>closer, hotter, further than the old programs dared.</b></p>
+        <div class="cta">
+          <a href="#fleet" class="btn btn--solid">View Missions <span class="arr">→</span></a>
+          <a href="#stmt" class="btn btn--ghost">Program Brief</a>
+        </div>
+        <div class="coords">
+          <div>LAT<b>28.5°N</b></div>
+          <div>LONG<b>80.6°W</b></div>
+          <div>WINDOW<b>2026.11.04</b></div>
+        </div>
+      </div>
+
+      <div class="hero-r">
+        <div class="disc-wrap">
+          <div class="rays"></div>
+          <div class="ring r2"></div>
+          <div class="disc"><div class="ring r1"></div></div>
+          <div class="orbit"><span class="craft"></span></div>
+          <div class="leader"><span class="t">Photosphere<br/>contact alt.<br/>4.1M KM</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker">
+    <div class="ticker-track" id="tick"></div>
+  </div>
+
+  <section class="block" id="manifest">
+    <div class="sec-head"><h2>Mission Manifest</h2><span class="idx">[ 01 / OPERATIONS ]</span></div>
+    <div class="manifest">
+      <div class="stat"><div class="num" data-to="41"><span class="v">0</span></div><div class="cap lbl">Crewed flights logged</div></div>
+      <div class="stat"><div class="num" data-to="4.1"><span class="v">0</span><span class="u">M KM</span></div><div class="cap lbl">Closest solar approach</div></div>
+      <div class="stat"><div class="num" data-to="1340"><span class="v">0</span><span class="u">°C</span></div><div class="cap lbl">Hull rating, sustained</div></div>
+      <div class="stat"><div class="num" data-to="7"><span class="v">0</span><span class="u">/ 9</span></div><div class="cap lbl">Vehicles flight-certified</div></div>
+    </div>
+  </section>
+
+  <section class="block" id="fleet" style="padding-top:0;">
+    <div class="sec-head"><h2>The Fleet</h2><span class="idx">[ 02 / VEHICLES ]</span></div>
+    <div class="fleet">
+      <div class="craft-card">
+        <div class="top"><span class="code">HX-07 · "DAYBREAK"</span><span class="status"><span class="d"></span>FLIGHT READY</span></div>
+        <div class="craft-viz">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#1b1814" stroke-width="2.2">
+            <circle cx="50" cy="50" r="30" stroke="#de4f1d"/>
+            <path d="M50 14v72M14 50h72" stroke-dasharray="3 5" opacity="0.5"/>
+            <path d="M50 24l9 18-9 6-9-6z" fill="#de4f1d" stroke="none"/>
+            <circle cx="50" cy="50" r="6" fill="#1b1814" stroke="none"/>
+          </svg>
+        </div>
+        <h3>Daybreak</h3>
+        <div class="spec">
+          <div class="r"><span class="k">CLASS</span><span class="v">Solar Cutter</span></div>
+          <div class="r"><span class="k">CREW</span><span class="v">3</span></div>
+          <div class="r"><span class="k">SHIELD</span><span class="v">Ablative VII</span></div>
+          <div class="r"><span class="k">ΔV</span><span class="v">18.2 KM/S</span></div>
+        </div>
+      </div>
+      <div class="craft-card">
+        <div class="top"><span class="code">HX-11 · "MERIDIAN"</span><span class="status"><span class="d"></span>IN ORBIT</span></div>
+        <div class="craft-viz">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#1b1814" stroke-width="2.2">
+            <ellipse cx="50" cy="50" rx="34" ry="16" stroke="#de4f1d"/>
+            <ellipse cx="50" cy="50" rx="16" ry="34" stroke="#de4f1d" opacity="0.6"/>
+            <rect x="40" y="40" width="20" height="20" fill="#1b1814" stroke="none"/>
+            <rect x="45" y="45" width="10" height="10" fill="#f1ebdf" stroke="none"/>
+          </svg>
+        </div>
+        <h3>Meridian</h3>
+        <div class="spec">
+          <div class="r"><span class="k">CLASS</span><span class="v">Relay Station</span></div>
+          <div class="r"><span class="k">CREW</span><span class="v">6</span></div>
+          <div class="r"><span class="k">SHIELD</span><span class="v">Mirror Array</span></div>
+          <div class="r"><span class="k">ΔV</span><span class="v">9.4 KM/S</span></div>
+        </div>
+      </div>
+      <div class="craft-card">
+        <div class="top"><span class="code">HX-13 · "ICARUS II"</span><span class="status"><span class="d"></span>FUELING</span></div>
+        <div class="craft-viz">
+          <svg viewBox="0 0 100 100" fill="none" stroke="#1b1814" stroke-width="2.2">
+            <path d="M50 16l26 60H24z" stroke="#de4f1d"/>
+            <path d="M50 16v60" stroke-dasharray="3 5" opacity="0.5"/>
+            <circle cx="50" cy="58" r="9" fill="#de4f1d" stroke="none"/>
+            <path d="M34 76l16-12 16 12" />
+          </svg>
+        </div>
+        <h3>Icarus II</h3>
+        <div class="spec">
+          <div class="r"><span class="k">CLASS</span><span class="v">Deep Diver</span></div>
+          <div class="r"><span class="k">CREW</span><span class="v">2</span></div>
+          <div class="r"><span class="k">SHIELD</span><span class="v">Phoenix-grade</span></div>
+          <div class="r"><span class="k">ΔV</span><span class="v">24.7 KM/S</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="statement" id="stmt">
+    <div class="in">
+      <span class="lbl">[ 03 / DOCTRINE ]</span>
+      <p>We do not study the sun from a <em>safe distance.</em> We build hulls that hold at fourteen hundred degrees, and we put people inside them.</p>
+    </div>
+  </section>
+
+  <footer id="foot">
+    <div class="patch">
+      <svg class="pt" viewBox="0 0 132 132">
+        <defs><path id="circ" d="M66,66 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0"/></defs>
+        <circle cx="66" cy="66" r="64" fill="none" stroke="#1b1814" stroke-width="1.5"/>
+        <circle cx="66" cy="66" r="50" fill="none" stroke="#1b1814" stroke-width="1.5"/>
+        <text font-family="Space Mono, monospace" font-size="9.5" letter-spacing="3.2" fill="#1b1814">
+          <textPath href="#circ" startOffset="0">· HELIOS PROGRAM · CAPE MERIDIAN · AD ASTRA PER IGNEM ·</textPath>
+        </text>
+      </svg>
+      <div class="center"><span class="s"></span><span class="y">MMXXVI</span></div>
+    </div>
+    <div class="foot-mid">Fly toward<br/>the <span>fire.</span></div>
+    <div class="foot-r">
+      <a href="#">PROGRAM@HELIOS.SPACE</a>
+      <a href="#">+1 321 — DEEP SUN</a>
+      <a href="#">CAPE MERIDIAN, FL</a>
+      <a href="#">PRESS / CAREERS / ARCHIVE</a>
+    </div>
+  </footer>
+  <div class="copyline">
+    <span>© MMXXVI Helios Program</span>
+    <span>Ad Astra Per Ignem</span>
+    <span>Doc. HX—2026—001</span>
+  </div>
+
+<script>
+  // mission clock — counts up from page load
+  (function () {
+    var t0 = Date.now();
+    var el = document.getElementById("clk");
+    function pad(n) { return String(n).padStart(2, "0"); }
+    setInterval(function () {
+      var s = Math.floor((Date.now() - t0) / 1000);
+      el.textContent = "T+ " + pad((s / 3600) | 0) + ":" + pad(((s / 60) | 0) % 60) + ":" + pad(s % 60);
+    }, 1000);
+  })();
+
+  // ticker content (duplicated for seamless loop)
+  (function () {
+    var items = [
+      "HELIOS-VII LAUNCH WINDOW 2026.11.04", "PAYLOAD 4,200 KG", "CAPE MERIDIAN PAD 3A",
+      "HULL TEMP NOMINAL 1,340°C", "CREW OF THREE CERTIFIED", "TRAJECTORY: SOLAR PROGRADE",
+      "DAYBREAK FLIGHT-READY", "AD ASTRA PER IGNEM"
+    ];
+    var one = items.map(function (x) { return "<span><i>◦</i>" + x + "</span>"; }).join("");
+    document.getElementById("tick").innerHTML = one + one;
+  })();
+
+  // counter tick-up on scroll into view
+  (function () {
+    function ease(t) { return 1 - Math.pow(1 - t, 3); }
+    function run(node) {
+      var to = parseFloat(node.getAttribute("data-to"));
+      var dec = (to % 1 !== 0) ? 1 : 0;
+      var vEl = node.querySelector(".v");
+      var dur = 1500, start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var val = to * ease(p);
+        vEl.textContent = dec ? val.toFixed(1) : Math.round(val).toLocaleString();
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll(".num[data-to]").forEach(function (n) { io.observe(n); });
+  })();
+</script>
+</body>
+</html>

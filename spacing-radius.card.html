@@ -1,0 +1,25 @@
+<!-- @dsCard group="Spacing" viewport="700x180" name="Radius & shadow" subtitle="18px default radius · soft hover-only lift" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--text); }
+  .row { display: flex; gap: 26px; padding: 30px 32px; align-items: center; }
+  .item { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .box { width: 96px; height: 70px; background: var(--card); }
+  .v { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+  .lift { box-shadow: 0 20px 50px rgba(0,0,0,0.08); border-radius: 18px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="item"><div class="box" style="border-radius:0"></div><span class="v">0 · Ink&amp;Paper</span></div>
+  <div class="item"><div class="box" style="border-radius:8px"></div><span class="v">8 · Warm</span></div>
+  <div class="item"><div class="box" style="border-radius:14px"></div><span class="v">14 · Cool</span></div>
+  <div class="item"><div class="box" style="border-radius:18px"></div><span class="v">18 · default</span></div>
+  <div class="item"><div class="box lift"></div><span class="v">hover lift</span></div>
+</div>
+</body>
+</html>

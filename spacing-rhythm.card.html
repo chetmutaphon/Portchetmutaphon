@@ -1,0 +1,24 @@
+<!-- @dsCard group="Spacing" viewport="700x200" name="Section rhythm" subtitle="1120px column · 48px gutters · alternating surfaces" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--text); }
+  .stack { display: flex; flex-direction: column; }
+  .sec { padding: 22px 40px; position: relative; }
+  .alt { background: var(--bg-alt); }
+  .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .ti { font-family: var(--font-heading); font-weight: var(--heading-weight); font-size: 22px; letter-spacing: -0.03em; }
+  .tag { position: absolute; right: 40px; top: 22px; font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="stack">
+  <div class="sec"><span class="tag">--bg · 120px</span><div class="lbl">Experience</div><div class="ti">Where I've worked.</div></div>
+  <div class="sec alt"><span class="tag">--bg-alt · 120px</span><div class="lbl">Artwork</div><div class="ti">Design work.</div></div>
+  <div class="sec"><span class="tag">--bg · 120px</span><div class="lbl">Photography</div><div class="ti">Through the lens.</div></div>
+</div>
+</body>
+</html>

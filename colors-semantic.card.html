@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x170" name="Semantic aliases" subtitle="How the scale maps to surfaces, text & lines" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 24px; }
+  .sw { display: flex; flex-direction: column; gap: 7px; }
+  .chip { height: 52px; border-radius: 10px; border: 1px solid var(--border); }
+  .n { font-size: 12px; font-weight: 600; }
+  .v { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="sw"><div class="chip" style="background:var(--bg)"></div><span class="n">--bg</span><span class="v">page</span></div>
+  <div class="sw"><div class="chip" style="background:var(--bg-alt)"></div><span class="n">--bg-alt</span><span class="v">alt section</span></div>
+  <div class="sw"><div class="chip" style="background:var(--card)"></div><span class="n">--card</span><span class="v">card fill</span></div>
+  <div class="sw"><div class="chip" style="background:var(--accent)"></div><span class="n">--accent</span><span class="v">label / dot</span></div>
+  <div class="sw"><div class="chip" style="background:var(--text)"></div><span class="n">--text</span><span class="v">primary</span></div>
+  <div class="sw"><div class="chip" style="background:var(--text-secondary)"></div><span class="n">--text-secondary</span><span class="v">captions</span></div>
+  <div class="sw"><div class="chip" style="background:var(--border)"></div><span class="n">--border</span><span class="v">hairline</span></div>
+  <div class="sw"><div class="chip" style="background:var(--nav-bg);backdrop-filter:blur(6px)"></div><span class="n">--nav-bg</span><span class="v">glass nav</span></div>
+</div>
+</body>
+</html>

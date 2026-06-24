@@ -1,0 +1,61 @@
+<!-- @dsCard group="Components" viewport="700x440" name="Core — Button, Tag, SectionLabel" subtitle="Buttons, pills, section eyebrows" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="../../styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+  .wrap { padding: 36px 40px; display: flex; flex-direction: column; gap: 30px; }
+  .row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .grp { display: flex; flex-direction: column; gap: 12px; }
+  .cap { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { Button, Tag, SectionLabel } = window.ChetMutaphonDesignSystem_a09153;
+  function Demo() {
+    return (
+      <div className="wrap">
+        <div className="grp">
+          <span className="cap">Button — variants</span>
+          <div className="row">
+            <Button variant="primary">View works</Button>
+            <Button variant="outline">Contact me</Button>
+            <Button variant="ghost">Back</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
+          <div className="row">
+            <Button variant="primary" size="sm">Small</Button>
+            <Button variant="primary" size="md">Medium</Button>
+            <Button variant="primary" size="lg">Large</Button>
+          </div>
+        </div>
+        <div className="grp">
+          <span className="cap">Tag — skill &amp; filter</span>
+          <div className="row">
+            <Tag>Graphic Design</Tag>
+            <Tag>Art Direction</Tag>
+            <Tag>Motion Graphics</Tag>
+            <Tag variant="filter" active>All</Tag>
+            <Tag variant="filter">Photography</Tag>
+          </div>
+        </div>
+        <div className="grp">
+          <span className="cap">SectionLabel</span>
+          <SectionLabel title="Through the lens.">Photography</SectionLabel>
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

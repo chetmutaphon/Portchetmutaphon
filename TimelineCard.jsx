@@ -1,0 +1,77 @@
+import React from "react";
+
+/**
+ * TimelineCard — one experience entry. Pair with a vertical rail + dot in the
+ * parent (see UI kit). Card nudges right on hover.
+ */
+export function TimelineCard({ role, company, period, desc, style = {} }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        background: "var(--card)",
+        borderRadius: "var(--radius)",
+        padding: "28px 32px",
+        transform: hover ? "translateX(4px)" : "translateX(0)",
+        transition: "transform 0.5s ease",
+        ...style,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          flexWrap: "wrap",
+          gap: 8,
+          marginBottom: 4,
+        }}
+      >
+        <h3
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontWeight: "var(--heading-weight)",
+            fontSize: 18,
+            color: "var(--text)",
+            margin: 0,
+          }}
+        >
+          {role}
+        </h3>
+        <span
+          style={{
+            fontSize: 13,
+            color: "var(--text-secondary)",
+            fontWeight: 500,
+            letterSpacing: "0.02em",
+          }}
+        >
+          {period}
+        </span>
+      </div>
+      <p
+        style={{
+          fontSize: 14,
+          color: "var(--accent)",
+          marginBottom: 10,
+          marginTop: 0,
+          fontWeight: 500,
+        }}
+      >
+        {company}
+      </p>
+      <p
+        style={{
+          fontSize: 15,
+          lineHeight: 1.65,
+          color: "var(--text-secondary)",
+          margin: 0,
+        }}
+      >
+        {desc}
+      </p>
+    </div>
+  );
+}

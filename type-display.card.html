@@ -1,0 +1,22 @@
+<!-- @dsCard group="Type" viewport="700x230" name="Display scale" subtitle="Hero name & section title — tight, negative-tracked" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--text); }
+  .wrap { padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; }
+  .item { display: flex; flex-direction: column; gap: 4px; }
+  .meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--text-secondary); text-transform: uppercase; }
+  .hero { font-family: var(--font-heading); font-weight: var(--heading-weight); font-size: 64px; letter-spacing: -0.04em; line-height: 1.05; }
+  .title { font-family: var(--font-heading); font-weight: var(--heading-weight); font-size: 40px; letter-spacing: -0.03em; line-height: 1.15; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="item"><span class="meta">Hero — clamp(48,8vw,88) · -0.04em · 700</span><span class="hero">Chet Mutaphon</span></div>
+  <div class="item"><span class="meta">Section title — clamp(32,4vw,52) · -0.03em</span><span class="title">Through the lens.</span></div>
+</div>
+</body>
+</html>
