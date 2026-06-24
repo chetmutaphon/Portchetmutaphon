@@ -64,69 +64,43 @@ SUPABASE_ANON_KEY=your-anon-key-here
 
 ---
 
-## 4. Supabase Image Integration (ต่อใน Cursor)
+## 4. Supabase Image Integration
 
-### ติดตั้ง Supabase JS ใน index.html
-เพิ่มใน `<head>` ก่อน `_ds_bundle.js`:
-```html
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-  window.__SUPABASE_URL = "https://xxxxxxxxxxxx.supabase.co";
-  window.__SUPABASE_KEY = "your-anon-key";
-  window.__supabase = supabase.createClient(window.__SUPABASE_URL, window.__SUPABASE_KEY);
-</script>
+### ขั้นตอนที่ 1 — ใส่ credentials
+
+แก้ไฟล์ `ui_kits/portfolio/supabase-config.js`:
+
+```js
+window.__SUPABASE_URL = "https://xxxxxxxxxxxx.supabase.co";
+window.__SUPABASE_KEY = "your-anon-key-here";
 ```
 
-### แก้ sections.jsx — ดึงภาพจาก Supabase Storage
+> ดูตัวอย่างได้ที่ `ui_kits/portfolio/supabase-config.example.js`
+> หา URL และ anon key ได้ที่ Supabase Dashboard → **Project Settings** → **API**
 
-แทนที่ `const ARTWORK = [...]` ด้วย dynamic loading:
+### ขั้นตอนที่ 2 — อัปโหลดรูปเข้า Storage
 
-```jsx
-function useSupabaseImages(bucket) {
-  const [images, setImages] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+1. Bucket **`artwork`** — ใส่รูป Design Work (`.jpg`, `.png`, `.webp`)
+2. Bucket **`photography`** — ใส่รูป Photography
 
-  React.useEffect(() => {
-    if (!window.__supabase) return;
-    window.__supabase.storage
-      .from(bucket)
-      .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } })
-      .then(({ data, error }) => {
-        if (error || !data) return;
-        const urls = data
-          .filter(f => f.name.match(/\.(jpg|jpeg|png|webp|gif)$/i))
-          .map((f, i) => ({
-            id: f.name,
-            title: f.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
-            label: bucket.toUpperCase(),
-            hue: (i * 40) % 360,
-            img: `${window.__SUPABASE_URL}/storage/v1/object/public/${bucket}/${f.name}`,
-          }));
-        setImages(urls);
-        setLoading(false);
-      });
-  }, [bucket]);
+ชื่อไฟล์จะถูกใช้เป็นชื่อการ์ดอัตโนมัติ (เช่น `menu-design.jpg` → "menu design")
 
-  return { images, loading };
-}
+### ขั้นตอนที่ 3 — Deploy
 
-// ใน ArtworkSection:
-function ArtworkSection({ onOpen }) {
-  const { images, loading } = useSupabaseImages('artwork');
-  const items = images.length > 0 ? images : ARTWORK; // fallback to static
-  return (
-    <section className="section section--alt" id="artwork">
-      <div className="section-inner">
-        <ScrollReveal><div className="section-head"><SectionLabel title="Design work.">Artwork</SectionLabel></div></ScrollReveal>
-        {loading ? <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-secondary)' }}>Loading...</div>
-          : <Grid items={items} aspectRatio="3/4" columns={4} onOpen={onOpen} />}
-      </div>
-    </section>
-  );
-}
-
-// เหมือนกันสำหรับ PhotographySection → bucket: 'photography'
+```bash
+git add ui_kits/portfolio/supabase-config.js
+git commit -m "Add Supabase credentials"
+git push
 ```
+
+Vercel จะ redeploy อัตโนมัติ — หน้า Artwork และ Photography จะดึงรูปจาก Supabase
+
+### การทำงาน
+
+- `index.html` โหลด Supabase JS + `supabase-config.js` + `supabase-images.js`
+- Section **Artwork** ดึงจาก bucket `artwork`
+- Section **Photography** ดึงจาก bucket `photography`
+- ถ้า Supabase ยังไม่ได้ตั้งค่า หรือ bucket ว่าง → ใช้รูป static fallback จาก `assets/imagery/`
 
 ---
 
@@ -153,7 +127,10 @@ function ArtworkSection({ onOpen }) {
 │   ├── sections.jsx            ← All sections + LoginModal + EditToolbar
 │   ├── app.jsx                 ← App root + useEditMode hook
 │   ├── kit.css                 ← Portfolio-specific styles
-│   └── image-slot.js           ← Drag-drop image placeholder
+│   ├── image-slot.js           ← Drag-drop image placeholder
+│   ├── supabase-config.js      ← Supabase URL + anon key (fill in before deploy)
+│   ├── supabase-config.example.js
+│   └── supabase-images.js      ← useSupabaseImages hook for Storage buckets
 └── components/
     ├── core/                   ← Button, Tag, SectionLabel
     └── portfolio/              ← GalleryCard, VideoCard, TimelineCard

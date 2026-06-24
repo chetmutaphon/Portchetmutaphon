@@ -1591,6 +1591,14 @@ function Grid({
 function ArtworkSection({
   onOpen
 }) {
+  const {
+    images,
+    loading
+  } = window.useSupabaseImages ? window.useSupabaseImages("artwork") : {
+    images: [],
+    loading: false
+  };
+  const items = images.length > 0 ? images : ARTWORK;
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
     id: "artwork"
@@ -1600,8 +1608,14 @@ function ArtworkSection({
     className: "section-head"
   }, /*#__PURE__*/React.createElement(SectionLabel, {
     title: "Design work."
-  }, "Artwork"))), /*#__PURE__*/React.createElement(Grid, {
-    items: ARTWORK,
+  }, "Artwork"))), loading ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 40,
+      color: "var(--text-secondary)"
+    }
+  }, "Loading...") : /*#__PURE__*/React.createElement(Grid, {
+    items: items,
     aspectRatio: "3/4",
     columns: 4,
     onOpen: onOpen
@@ -1610,6 +1624,14 @@ function ArtworkSection({
 function PhotographySection({
   onOpen
 }) {
+  const {
+    images,
+    loading
+  } = window.useSupabaseImages ? window.useSupabaseImages("photography") : {
+    images: [],
+    loading: false
+  };
+  const items = images.length > 0 ? images : PHOTOS;
   return /*#__PURE__*/React.createElement("section", {
     className: "section",
     id: "photography"
@@ -1619,8 +1641,14 @@ function PhotographySection({
     className: "section-head"
   }, /*#__PURE__*/React.createElement(SectionLabel, {
     title: "Through the lens."
-  }, "Photography"))), /*#__PURE__*/React.createElement(Grid, {
-    items: PHOTOS,
+  }, "Photography"))), loading ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 40,
+      color: "var(--text-secondary)"
+    }
+  }, "Loading...") : /*#__PURE__*/React.createElement(Grid, {
+    items: items,
     aspectRatio: "3/4",
     columns: 4,
     onOpen: onOpen
