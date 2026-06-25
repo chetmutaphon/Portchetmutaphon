@@ -1900,9 +1900,15 @@ function LoginModal({
 
 // ============ EDIT TOOLBAR ============
 function EditToolbar() {
+  const [saved, setSaved] = React.useState(false);
   const applyColor = c => {
     document.execCommand("styleWithCSS", false, true);
     document.execCommand("foreColor", false, c);
+  };
+  const saveAll = () => {
+    window.portfolioEdit?.saveAllEdits();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
   const resetAll = () => {
     if (!confirm("รีเซ็ตข้อความทั้งหมดกลับค่าเดิม?")) return;
@@ -1914,6 +1920,11 @@ function EditToolbar() {
   }, /*#__PURE__*/React.createElement("span", {
     className: "edit-toolbar-label"
   }, "\u270F Edit Mode"), /*#__PURE__*/React.createElement("span", {
+    className: "edit-toolbar-sep"
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "edit-toolbar-btn edit-toolbar-btn--primary",
+    onClick: saveAll
+  }, saved ? "\u2713 \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01\u0E41\u0E25\u0E49\u0E27" : "\u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01"), /*#__PURE__*/React.createElement("span", {
     className: "edit-toolbar-sep"
   }), /*#__PURE__*/React.createElement("label", {
     className: "edit-toolbar-color"
@@ -1963,36 +1974,37 @@ const THEMES = [{
   label: "Ink & Paper"
 }];
 
-// ---- Edit mode hook: adds contenteditable to text elements ----
+// ---- Edit mode: load saved text + enable editing when logged in ----
+function usePersistedContent() {
+  React.useEffect(() => {
+    const t = setTimeout(() => window.portfolioEdit?.applyPersistedEdits(), 250);
+    return () => clearTimeout(t);
+  }, []);
+}
 function useEditMode(enabled) {
   React.useEffect(() => {
     if (!enabled) return;
     const pairs = [];
     const t = setTimeout(() => {
-      const raw = [...document.querySelectorAll('.hero-name, .hero-title, .hero-tagline, .about-text, .footer-name, .footer-copy, .nav-logo'), ...document.querySelectorAll('.section-inner h1, .section-inner h2, .section-inner h3, .section-inner h4, .section-inner p')];
-      const seen = new Set();
-      raw.forEach((el, i) => {
-        if (seen.has(el)) return;
-        if (el.closest('.edit-toolbar, button, .btn, .theme-switch, .modal-overlay')) return;
-        seen.add(el);
-        const key = `pe_${i}_${el.tagName.toLowerCase()}`;
-        const saved = localStorage.getItem(key);
-        if (saved) el.innerHTML = saved;
-        el.contentEditable = 'true';
+      window.portfolioEdit?.getEditableElements().forEach(({
+        el,
+        key
+      }) => {
+        el.contentEditable = "true";
         el.spellcheck = false;
         const fn = () => localStorage.setItem(key, el.innerHTML);
-        el.addEventListener('blur', fn);
+        el.addEventListener("blur", fn);
         pairs.push([el, fn]);
       });
-      document.body.classList.add('edit-mode-active');
-    }, 200);
+      document.body.classList.add("edit-mode-active");
+    }, 250);
     return () => {
       clearTimeout(t);
       pairs.forEach(([el, fn]) => {
-        el.contentEditable = 'false';
-        el.removeEventListener('blur', fn);
+        el.contentEditable = "false";
+        el.removeEventListener("blur", fn);
       });
-      document.body.classList.remove('edit-mode-active');
+      document.body.classList.remove("edit-mode-active");
     };
   }, [enabled]);
 }
@@ -2003,6 +2015,7 @@ function App() {
   const [lightbox, setLightbox] = React.useState(null);
   const [video, setVideo] = React.useState(null);
   const active = window.useActiveSection(["about", "experience", "artwork", "photography", "videos", "dashboard"]);
+  usePersistedContent();
   useEditMode(editMode);
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -2010,6 +2023,7 @@ function App() {
   }, [theme]);
   const handleAuth = () => {
     if (editMode) {
+      window.portfolioEdit?.saveAllEdits();
       localStorage.removeItem("portfolio_auth");
       window.location.reload();
     } else {

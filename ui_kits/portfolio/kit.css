@@ -552,8 +552,14 @@ body {
   font-size: 12px;
 }
 
-.edit-toolbar-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+.edit-toolbar-btn--primary {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.edit-toolbar-btn--primary:hover {
+  background: #fff;
 }
 
 .edit-mode-active [contenteditable="true"] {

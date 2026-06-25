@@ -777,9 +777,15 @@ function LoginModal({
 
 // ============ EDIT TOOLBAR ============
 function EditToolbar() {
+  const [saved, setSaved] = React.useState(false);
   const applyColor = c => {
     document.execCommand("styleWithCSS", false, true);
     document.execCommand("foreColor", false, c);
+  };
+  const saveAll = () => {
+    window.portfolioEdit?.saveAllEdits();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
   const resetAll = () => {
     if (!confirm("รีเซ็ตข้อความทั้งหมดกลับค่าเดิม?")) return;
@@ -791,6 +797,11 @@ function EditToolbar() {
   }, /*#__PURE__*/React.createElement("span", {
     className: "edit-toolbar-label"
   }, "\u270F Edit Mode"), /*#__PURE__*/React.createElement("span", {
+    className: "edit-toolbar-sep"
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "edit-toolbar-btn edit-toolbar-btn--primary",
+    onClick: saveAll
+  }, saved ? "\u2713 \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01\u0E41\u0E25\u0E49\u0E27" : "\u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01"), /*#__PURE__*/React.createElement("span", {
     className: "edit-toolbar-sep"
   }), /*#__PURE__*/React.createElement("label", {
     className: "edit-toolbar-color"

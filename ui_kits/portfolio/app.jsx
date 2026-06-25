@@ -13,39 +13,38 @@ const THEMES = [{
   label: "Ink & Paper"
 }];
 
-// ---- Edit mode hook: adds contenteditable to text elements ----
+function usePersistedContent() {
+  React.useEffect(() => {
+    const t = setTimeout(() => window.portfolioEdit?.applyPersistedEdits(), 250);
+    return () => clearTimeout(t);
+  }, []);
+}
+
 function useEditMode(enabled) {
   React.useEffect(() => {
     if (!enabled) return;
     const pairs = [];
     const t = setTimeout(() => {
-      const raw = [...document.querySelectorAll('.hero-name, .hero-title, .hero-tagline, .about-text, .footer-name, .footer-copy, .nav-logo'), ...document.querySelectorAll('.section-inner h1, .section-inner h2, .section-inner h3, .section-inner h4, .section-inner p')];
-      const seen = new Set();
-      raw.forEach((el, i) => {
-        if (seen.has(el)) return;
-        if (el.closest('.edit-toolbar, button, .btn, .theme-switch, .modal-overlay')) return;
-        seen.add(el);
-        const key = `pe_${i}_${el.tagName.toLowerCase()}`;
-        const saved = localStorage.getItem(key);
-        if (saved) el.innerHTML = saved;
-        el.contentEditable = 'true';
+      window.portfolioEdit?.getEditableElements().forEach(({ el, key }) => {
+        el.contentEditable = "true";
         el.spellcheck = false;
         const fn = () => localStorage.setItem(key, el.innerHTML);
-        el.addEventListener('blur', fn);
+        el.addEventListener("blur", fn);
         pairs.push([el, fn]);
       });
-      document.body.classList.add('edit-mode-active');
-    }, 200);
+      document.body.classList.add("edit-mode-active");
+    }, 250);
     return () => {
       clearTimeout(t);
       pairs.forEach(([el, fn]) => {
-        el.contentEditable = 'false';
-        el.removeEventListener('blur', fn);
+        el.contentEditable = "false";
+        el.removeEventListener("blur", fn);
       });
-      document.body.classList.remove('edit-mode-active');
+      document.body.classList.remove("edit-mode-active");
     };
   }, [enabled]);
 }
+
 function App() {
   const [theme, setTheme] = React.useState(() => localStorage.getItem("portfolio_theme") || "");
   const [editMode] = React.useState(() => !!localStorage.getItem("portfolio_auth"));
@@ -53,6 +52,7 @@ function App() {
   const [lightbox, setLightbox] = React.useState(null);
   const [video, setVideo] = React.useState(null);
   const active = window.useActiveSection(["about", "experience", "artwork", "photography", "videos", "dashboard"]);
+  usePersistedContent();
   useEditMode(editMode);
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -60,6 +60,7 @@ function App() {
   }, [theme]);
   const handleAuth = () => {
     if (editMode) {
+      window.portfolioEdit?.saveAllEdits();
       localStorage.removeItem("portfolio_auth");
       window.location.reload();
     } else {
