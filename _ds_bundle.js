@@ -1729,7 +1729,7 @@ function Footer() {
   }, "\xA9 2026 All rights reserved.")), /*#__PURE__*/React.createElement("div", {
     className: "footer-contact"
   }, /*#__PURE__*/React.createElement("a", {
-    href: "mailto:your.email@example.com",
+    href: "mailto:chetmutaphon@gmail.com",
     className: "footer-link"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "16",
@@ -1748,7 +1748,7 @@ function Footer() {
     d: "M1 5l7 4 7-4",
     stroke: "currentColor",
     strokeWidth: "1.5"
-  })), "your.email@example.com"), /*#__PURE__*/React.createElement("a", {
+  })), "chetmutaphon@gmail.com"), /*#__PURE__*/React.createElement("a", {
     href: "https://linkedin.com",
     target: "_blank",
     rel: "noopener",
