@@ -1,6 +1,7 @@
 // Light parallax + section entrance transitions (respects prefers-reduced-motion).
 (function () {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let sectionObserver = null;
 
   function initHeroParallax() {
     if (reduced) return;
@@ -25,8 +26,20 @@
       }
     };
 
+    window.removeEventListener("scroll", layer.__parallaxScroll || onScroll);
+    layer.__parallaxScroll = onScroll;
     window.addEventListener("scroll", onScroll, { passive: true });
     update();
+  }
+
+  function markVisibleSections() {
+    const sections = document.querySelectorAll(".section[data-motion]");
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92) {
+        section.classList.add("section--entered");
+      }
+    });
   }
 
   function initSectionTransitions() {
@@ -38,18 +51,28 @@
       return;
     }
 
-    const obs = new IntersectionObserver(
+    if (sectionObserver) {
+      sectionObserver.disconnect();
+    }
+
+    sectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("section--entered");
-          obs.unobserve(entry.target);
+          sectionObserver.unobserve(entry.target);
         });
       },
-      { threshold: 0.08, rootMargin: "0px 0px -6% 0px" }
+      { threshold: 0.05, rootMargin: "0px 0px -4% 0px" }
     );
 
-    sections.forEach((s) => obs.observe(s));
+    sections.forEach((s) => {
+      if (!s.classList.contains("section--entered")) {
+        sectionObserver.observe(s);
+      }
+    });
+
+    markVisibleSections();
   }
 
   function init() {
@@ -57,11 +80,17 @@
     initSectionTransitions();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    setTimeout(init, 300);
+  window.portfolioMotion = { init };
+
+  function scheduleInit() {
+    init();
+    setTimeout(init, 400);
+    setTimeout(markVisibleSections, 1200);
   }
 
-  window.portfolioMotion = { init };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", scheduleInit);
+  } else {
+    scheduleInit();
+  }
 })();

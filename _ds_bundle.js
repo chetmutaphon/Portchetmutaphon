@@ -1315,10 +1315,9 @@ function ScrollReveal({
     ref: ref,
     className: (className + " scroll-reveal" + (visible ? " scroll-reveal--visible" : "")).trim(),
     style: {
-      opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(42px)",
-      transition: `opacity 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}s, transform 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}s`,
-      willChange: "opacity, transform",
+      transform: visible ? "translateY(0)" : "translateY(32px)",
+      transition: `transform 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}s`,
+      willChange: "transform",
       ...style
     }
   }, children);
@@ -1416,7 +1415,11 @@ function Navigation({
   }, []);
   React.useEffect(() => {
     const t = setTimeout(() => setReady(true), 80);
-    return () => clearTimeout(t);
+    const safety = setTimeout(() => setReady(true), 1200);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(safety);
+    };
   }, []);
   const goTo = id => {
     const el = document.getElementById(id);
@@ -1455,8 +1458,12 @@ function HeroSection() {
   const [mounted, setMounted] = React.useState(false);
   const heroUrl = window.useSupabaseSlotImage ? window.useSupabaseSlotImage("hero") : "";
   React.useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 220);
-    return () => clearTimeout(t);
+    const t = setTimeout(() => setMounted(true), 120);
+    const safety = setTimeout(() => setMounted(true), 1200);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(safety);
+    };
   }, []);
   const go = id => {
     const el = document.getElementById(id);
@@ -2027,22 +2034,19 @@ const THEMES = [{
   label: "Ink & Paper"
 }];
 
-// ---- Edit mode: load saved text + enable editing when logged in ----
 function usePersistedContent() {
   React.useEffect(() => {
     const t = setTimeout(() => window.portfolioEdit?.applyPersistedEdits(), 250);
     return () => clearTimeout(t);
   }, []);
 }
+
 function useEditMode(enabled) {
   React.useEffect(() => {
     if (!enabled) return;
     const pairs = [];
     const t = setTimeout(() => {
-      window.portfolioEdit?.getEditableElements().forEach(({
-        el,
-        key
-      }) => {
+      window.portfolioEdit?.getEditableElements().forEach(({ el, key }) => {
         el.contentEditable = "true";
         el.spellcheck = false;
         const fn = () => localStorage.setItem(key, el.innerHTML);
@@ -2061,6 +2065,7 @@ function useEditMode(enabled) {
     };
   }, [enabled]);
 }
+
 function App() {
   const [theme, setTheme] = React.useState(() => localStorage.getItem("portfolio_theme") || "");
   const [editMode] = React.useState(() => !!localStorage.getItem("portfolio_auth"));
@@ -2070,6 +2075,12 @@ function App() {
   const active = window.useActiveSection(["about", "experience", "artwork", "photography", "videos", "dashboard"]);
   usePersistedContent();
   useEditMode(editMode);
+  React.useEffect(() => {
+    const run = () => window.portfolioMotion?.init();
+    requestAnimationFrame(() => requestAnimationFrame(run));
+    const t = setTimeout(run, 600);
+    return () => clearTimeout(t);
+  }, []);
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("portfolio_theme", theme);
@@ -2121,6 +2132,7 @@ function App() {
   }, t.label))));
 }
 window.App = App;
+
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/portfolio/app.jsx", error: String((e && e.message) || e) }); }
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.App, null));
 

@@ -55,6 +55,12 @@ function App() {
   usePersistedContent();
   useEditMode(editMode);
   React.useEffect(() => {
+    const run = () => window.portfolioMotion?.init();
+    requestAnimationFrame(() => requestAnimationFrame(run));
+    const t = setTimeout(run, 600);
+    return () => clearTimeout(t);
+  }, []);
+  React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("portfolio_theme", theme);
   }, [theme]);
