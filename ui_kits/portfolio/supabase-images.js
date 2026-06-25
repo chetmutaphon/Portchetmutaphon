@@ -1,4 +1,5 @@
-// Fetch gallery images from a single Supabase Storage bucket with per-section folders.
+// Fetch gallery images from a single Supabase Storage bucket with per-section folders
+// (artwork, photography, socialmedia).
 (function () {
   function useSupabaseImages(folder) {
     const [images, setImages] = React.useState([]);

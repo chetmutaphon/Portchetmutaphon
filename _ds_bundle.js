@@ -1685,6 +1685,14 @@ function VideoSection({
 function DashboardSection({
   onOpen
 }) {
+  const {
+    images,
+    loading
+  } = window.useSupabaseImages ? window.useSupabaseImages("socialmedia") : {
+    images: [],
+    loading: false
+  };
+  const items = images.length > 0 ? images : DASHBOARDS;
   return /*#__PURE__*/React.createElement("section", {
     className: "section",
     id: "dashboard"
@@ -1694,8 +1702,14 @@ function DashboardSection({
     className: "section-head"
   }, /*#__PURE__*/React.createElement(SectionLabel, {
     title: "Social media post."
-  }, "Marketing"))), /*#__PURE__*/React.createElement(Grid, {
-    items: DASHBOARDS,
+  }, "Marketing"))), loading ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 40,
+      color: "var(--text-secondary)"
+    }
+  }, "Loading...") : /*#__PURE__*/React.createElement(Grid, {
+    items: items,
     aspectRatio: "4/3",
     onOpen: onOpen
   })));
