@@ -390,8 +390,8 @@ body {
 }
 
 .lightbox-content {
-  max-width: 900px;
-  width: 100%;
+  max-width: min(920px, 95vw);
+  width: auto;
   background: var(--bg);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -405,18 +405,26 @@ body {
 }
 
 .lightbox-image {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: var(--card);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--card);
+  padding: 0;
+  max-height: 85vh;
+}
+
+.lightbox-image:not(:has(img)) {
+  width: min(920px, 95vw);
+  aspect-ratio: 4 / 3;
 }
 
 .lightbox-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  display: block;
+  max-width: min(920px, 95vw);
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .lightbox-info {
