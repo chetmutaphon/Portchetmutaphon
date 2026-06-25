@@ -184,19 +184,39 @@ function useScrollReveal() {
 function ScrollReveal({
   children,
   delay = 0,
-  style = {}
+  style = {},
+  className = ""
 }) {
   const [ref, visible] = useScrollReveal();
   return /*#__PURE__*/React.createElement("div", {
     ref: ref,
+    className: (className + " scroll-reveal" + (visible ? " scroll-reveal--visible" : "")).trim(),
     style: {
       opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(36px)",
-      transition: `opacity 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s, transform 0.75s cubic-bezier(0.22,1,0.36,1) ${delay}s`,
+      transform: visible ? "translateY(0)" : "translateY(42px)",
+      transition: `opacity 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}s, transform 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}s`,
       willChange: "opacity, transform",
       ...style
     }
   }, children);
+}
+function AnimatedSectionHead({
+  eyebrow,
+  title
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "section-head"
+  }, /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0,
+    className: "text-motion-item"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "section-eyebrow"
+  }, eyebrow)), title && /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0.14,
+    className: "text-motion-item"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "section-title"
+  }, title)));
 }
 function useActiveSection(ids) {
   const [active, setActive] = React.useState("");
@@ -301,10 +321,10 @@ function Navigation({
   }, loggedIn ? "Logout" : "Login")));
 }
 function HeroSection() {
-  const [show, setShow] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
   const heroUrl = window.useSupabaseSlotImage ? window.useSupabaseSlotImage("hero") : "";
   React.useEffect(() => {
-    const t = setTimeout(() => setShow(true), 300);
+    const t = setTimeout(() => setMounted(true), 220);
     return () => clearTimeout(t);
   }, []);
   const go = id => {
@@ -314,6 +334,12 @@ function HeroSection() {
       behavior: "smooth"
     });
   };
+  const heroItem = (delay, child) => /*#__PURE__*/React.createElement("div", {
+    className: "hero-motion-item" + (mounted ? " hero-motion-item--in" : ""),
+    style: {
+      transitionDelay: delay + "s"
+    }
+  }, child);
   return /*#__PURE__*/React.createElement("section", {
     className: "hero",
     id: "hero",
@@ -321,19 +347,18 @@ function HeroSection() {
       position: "relative",
       overflow: "hidden"
     }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hero-parallax-layer"
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: "hero-bg",
     shape: "rect",
     placeholder: "Drop a hero background image",
     src: heroUrl || undefined,
     style: {
-      position: "absolute",
-      inset: 0,
       width: "100%",
-      height: "100%",
-      zIndex: 0
+      height: "100%"
     }
-  }), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "absolute",
       inset: 0,
@@ -345,27 +370,24 @@ function HeroSection() {
     className: "hero-content",
     style: {
       position: "relative",
-      zIndex: 2,
-      opacity: show ? 1 : 0,
-      transform: show ? "translateY(0)" : "translateY(30px)",
-      transition: "all 0.9s cubic-bezier(0.22,1,0.36,1)"
+      zIndex: 2
     }
-  }, /*#__PURE__*/React.createElement("h1", {
+  }, heroItem(0.05, /*#__PURE__*/React.createElement("h1", {
     className: "hero-name",
     style: {
       color: "#fff"
     }
-  }, "Chet Mutaphon"), /*#__PURE__*/React.createElement("p", {
+  }, "Chet Mutaphon")), heroItem(0.18, /*#__PURE__*/React.createElement("p", {
     className: "hero-title",
     style: {
       color: "rgba(255,255,255,0.75)"
     }
-  }, "Marketing Executive & Graphic Designer"), /*#__PURE__*/React.createElement("p", {
+  }, "Marketing Executive & Graphic Designer")), heroItem(0.32, /*#__PURE__*/React.createElement("p", {
     className: "hero-tagline",
     style: {
       color: "rgba(255,255,255,0.6)"
     }
-  }, "Crafting visual stories that connect brands with people."), /*#__PURE__*/React.createElement("div", {
+  }, "Crafting visual stories that connect brands with people.")), heroItem(0.46, /*#__PURE__*/React.createElement("div", {
     className: "hero-cta"
   }, /*#__PURE__*/React.createElement(Button, {
     variant: "primary",
@@ -377,13 +399,13 @@ function HeroSection() {
       e.preventDefault();
       go("dashboard");
     }
-  }, "Contact me"))), /*#__PURE__*/React.createElement("div", {
+  }, "Contact me")))), /*#__PURE__*/React.createElement("div", {
     className: "scroll-hint",
     style: {
       position: "relative",
       zIndex: 2,
-      opacity: show ? 1 : 0,
-      transition: "opacity 1.2s ease 0.8s"
+      opacity: mounted ? 1 : 0,
+      transition: "opacity 1.2s ease 0.9s"
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "scroll-hint-line"
@@ -393,21 +415,32 @@ function AboutSection() {
   const profileUrl = window.useSupabaseSlotImage ? window.useSupabaseSlotImage("profile") : "";
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
-    id: "about"
+    id: "about",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
   }, /*#__PURE__*/React.createElement("div", {
     className: "about-grid"
   }, /*#__PURE__*/React.createElement("div", {
     className: "about-left"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement(SectionLabel, {
-    title: /*#__PURE__*/React.createElement(React.Fragment, null, "A creative at the intersection", /*#__PURE__*/React.createElement("br", null), "of design and marketing.")
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head"
+  }, /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0,
+    className: "text-motion-item"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "section-eyebrow"
   }, "About")), /*#__PURE__*/React.createElement(ScrollReveal, {
-    delay: 0.1
+    delay: 0.14,
+    className: "text-motion-item"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "section-title"
+  }, "A creative at the intersection", /*#__PURE__*/React.createElement("br", null), "of design and marketing."))), /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0.22
   }, /*#__PURE__*/React.createElement("p", {
     className: "about-text"
   }, "With years of experience spanning graphic design, photography, videography, and marketing strategy, I bring a multidisciplinary approach to every project. From crafting brand identities to directing video content and analyzing campaign performance \u2014 I believe great design drives great results.")), /*#__PURE__*/React.createElement(ScrollReveal, {
-    delay: 0.2
+    delay: 0.34
   }, /*#__PURE__*/React.createElement("div", {
     className: "skills-grid"
   }, SKILLS.map((s, i) => /*#__PURE__*/React.createElement(Tag, {
@@ -415,7 +448,7 @@ function AboutSection() {
   }, s))))), /*#__PURE__*/React.createElement("div", {
     className: "about-right"
   }, /*#__PURE__*/React.createElement(ScrollReveal, {
-    delay: 0.15
+    delay: 0.28
   }, /*#__PURE__*/React.createElement("div", {
     className: "about-portrait-wrap"
   }, /*#__PURE__*/React.createElement("image-slot", {
@@ -428,18 +461,18 @@ function AboutSection() {
 function ExperienceSection() {
   return /*#__PURE__*/React.createElement("section", {
     className: "section",
-    id: "experience"
+    id: "experience",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
-    className: "section-head"
-  }, /*#__PURE__*/React.createElement(SectionLabel, {
+  }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
+    eyebrow: "Experience",
     title: "Where I've worked."
-  }, "Experience"))), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "timeline"
   }, EXPERIENCES.map((exp, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: i,
-    delay: i * 0.12
+    delay: i * 0.16
   }, /*#__PURE__*/React.createElement("div", {
     className: "timeline-item"
   }, /*#__PURE__*/React.createElement("div", {
@@ -459,7 +492,7 @@ function Grid({
     }
   }, items.map((it, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: it.id,
-    delay: i * 0.06
+    delay: i * 0.11
   }, /*#__PURE__*/React.createElement(GalleryCard, {
     title: it.title,
     label: it.label,
@@ -482,14 +515,14 @@ function ArtworkSection({
   const items = images.length > 0 ? images : ARTWORK;
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
-    id: "artwork"
+    id: "artwork",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
-    className: "section-head"
-  }, /*#__PURE__*/React.createElement(SectionLabel, {
+  }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
+    eyebrow: "Artwork",
     title: "Design work."
-  }, "Artwork"))), loading ? /*#__PURE__*/React.createElement("div", {
+  }), loading ? /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       padding: 40,
@@ -515,14 +548,14 @@ function PhotographySection({
   const items = images.length > 0 ? images : PHOTOS;
   return /*#__PURE__*/React.createElement("section", {
     className: "section",
-    id: "photography"
+    id: "photography",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
-    className: "section-head"
-  }, /*#__PURE__*/React.createElement(SectionLabel, {
+  }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
+    eyebrow: "Photography",
     title: "Through the lens."
-  }, "Photography"))), loading ? /*#__PURE__*/React.createElement("div", {
+  }), loading ? /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       padding: 40,
@@ -540,18 +573,18 @@ function VideoSection({
 }) {
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
-    id: "videos"
+    id: "videos",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
-    className: "section-head"
-  }, /*#__PURE__*/React.createElement(SectionLabel, {
+  }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
+    eyebrow: "Videographer",
     title: "Video Reel."
-  }, "Videographer"))), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "video-grid"
   }, VIDEOS.map((v, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: v.id,
-    delay: i * 0.1
+    delay: i * 0.14
   }, /*#__PURE__*/React.createElement(VideoCard, {
     title: v.title,
     desc: v.desc,
@@ -572,14 +605,14 @@ function DashboardSection({
   const items = images.length > 0 ? images : DASHBOARDS;
   return /*#__PURE__*/React.createElement("section", {
     className: "section",
-    id: "dashboard"
+    id: "dashboard",
+    "data-motion": "true"
   }, /*#__PURE__*/React.createElement("div", {
     className: "section-inner"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
-    className: "section-head"
-  }, /*#__PURE__*/React.createElement(SectionLabel, {
+  }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
+    eyebrow: "Marketing",
     title: "Social media post."
-  }, "Marketing"))), loading ? /*#__PURE__*/React.createElement("div", {
+  }), loading ? /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       padding: 40,
@@ -830,6 +863,7 @@ Object.assign(window, {
   Lightbox,
   VideoModal,
   useActiveSection,
+  AnimatedSectionHead,
   LoginModal,
   EditToolbar
 });

@@ -188,6 +188,101 @@ body {
   100% { transform: translateY(48px); opacity: 0; }
 }
 
+/* Hero parallax layer */
+.hero-parallax-layer {
+  position: absolute;
+  inset: -10% 0;
+  width: 100%;
+  height: 120%;
+  z-index: 0;
+  will-change: transform;
+}
+
+.hero-parallax-layer image-slot {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Hero text stagger */
+.hero-motion-item {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-motion-item--in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section entrance */
+.section[data-motion] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    background var(--dur-theme) ease;
+}
+
+.section[data-motion].section--entered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section text motion */
+.section-eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  font-size: var(--title-size, clamp(32px, 4vw, 52px));
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.text-motion-item {
+  display: block;
+}
+
+.section-head .text-motion-item + .text-motion-item {
+  margin-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax-layer {
+    transform: none !important;
+  }
+
+  .hero-motion-item,
+  .hero-motion-item--in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .section[data-motion],
+  .section[data-motion].section--entered {
+    opacity: 1;
+    transform: none;
+    transition: background var(--dur-theme) ease;
+  }
+}
+
 /* Sections */
 .section {
   padding: var(--section-gap) 0;
