@@ -1,8 +1,9 @@
-// Fetch gallery images from Supabase Storage buckets (artwork, photography).
+// Fetch gallery images from a single Supabase Storage bucket with per-section folders.
 (function () {
-  function useSupabaseImages(bucket) {
+  function useSupabaseImages(folder) {
     const [images, setImages] = React.useState([]);
     const [loading, setLoading] = React.useState(!!window.__supabase);
+    const bucket = window.__SUPABASE_BUCKET || "portfolio";
 
     React.useEffect(() => {
       if (!window.__supabase) {
@@ -15,7 +16,7 @@
 
       window.__supabase.storage
         .from(bucket)
-        .list("", { limit: 50, sortBy: { column: "created_at", order: "desc" } })
+        .list(folder, { limit: 50, sortBy: { column: "created_at", order: "desc" } })
         .then(({ data, error }) => {
           if (cancelled) return;
           if (error || !data) {
@@ -26,11 +27,11 @@
           const urls = data
             .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name))
             .map((f, i) => ({
-              id: f.name,
+              id: `${folder}/${f.name}`,
               title: f.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
-              label: bucket.toUpperCase(),
+              label: folder.toUpperCase(),
               hue: (i * 40) % 360,
-              img: `${window.__SUPABASE_URL}/storage/v1/object/public/${bucket}/${encodeURIComponent(f.name)}`,
+              img: `${window.__SUPABASE_URL}/storage/v1/object/public/${bucket}/${folder}/${encodeURIComponent(f.name)}`,
             }));
 
           setImages(urls);
@@ -40,7 +41,7 @@
       return () => {
         cancelled = true;
       };
-    }, [bucket]);
+    }, [folder, bucket]);
 
     return { images, loading };
   }
