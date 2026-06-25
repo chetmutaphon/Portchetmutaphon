@@ -302,6 +302,7 @@ function Navigation({
 }
 function HeroSection() {
   const [show, setShow] = React.useState(false);
+  const heroUrl = window.useSupabaseSlotImage ? window.useSupabaseSlotImage("hero") : "";
   React.useEffect(() => {
     const t = setTimeout(() => setShow(true), 300);
     return () => clearTimeout(t);
@@ -324,6 +325,7 @@ function HeroSection() {
     id: "hero-bg",
     shape: "rect",
     placeholder: "Drop a hero background image",
+    src: heroUrl || undefined,
     style: {
       position: "absolute",
       inset: 0,
@@ -388,6 +390,7 @@ function HeroSection() {
   })));
 }
 function AboutSection() {
+  const profileUrl = window.useSupabaseSlotImage ? window.useSupabaseSlotImage("profile") : "";
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
     id: "about"
@@ -418,7 +421,8 @@ function AboutSection() {
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: "about-portrait",
     shape: "rect",
-    placeholder: "Drop a portrait photo"
+    placeholder: "Drop a portrait photo",
+    src: profileUrl || undefined
   })))))));
 }
 function ExperienceSection() {
