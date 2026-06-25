@@ -263,6 +263,79 @@ body {
   margin-top: 12px;
 }
 
+/* Nav entrance */
+.nav-logo,
+.nav-link,
+.nav-right > button {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    color var(--dur-hover) ease;
+}
+
+.nav--ready .nav-logo {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.08s;
+}
+
+.nav--ready .nav-link {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(0.14s + var(--nav-i, 0) * 0.045s);
+}
+
+.nav--ready .nav-right > button {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.52s;
+}
+
+/* Scroll hint float */
+.scroll-hint--float {
+  animation: scroll-float 2.6s ease-in-out infinite;
+}
+
+@keyframes scroll-float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(7px); }
+}
+
+/* Card / tile micro-motion */
+.motion-tile > div img {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-tile > div:hover img {
+  transform: scale(1.06);
+}
+
+.motion-portrait {
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-portrait:hover {
+  transform: scale(1.02);
+}
+
+.skills-grid .skill-motion {
+  display: inline-block;
+}
+
+.hero-cta button {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-cta button:hover {
+  transform: translateY(-2px);
+}
+
+.footer-motion {
+  flex: 0 1 auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-parallax-layer {
     transform: none !important;
@@ -273,6 +346,34 @@ body {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .scroll-hint--float {
+    animation: none;
+    transform: translateX(-50%);
+  }
+
+  .nav-logo,
+  .nav-link,
+  .nav-right > button,
+  .nav--ready .nav-logo,
+  .nav--ready .nav-link,
+  .nav--ready .nav-right > button {
+    opacity: 1;
+    transform: none;
+    transition: color var(--dur-hover) ease;
+  }
+
+  .motion-tile > div img,
+  .motion-tile > div:hover img,
+  .motion-portrait,
+  .motion-portrait:hover {
+    transform: none;
+    transition: none;
+  }
+
+  .hero-cta button:hover {
+    transform: none;
   }
 
   .section[data-motion],

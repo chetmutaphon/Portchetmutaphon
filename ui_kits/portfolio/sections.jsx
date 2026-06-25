@@ -283,12 +283,17 @@ function Navigation({
   onAuth
 }) {
   const [scrolled, setScrolled] = React.useState(false);
+  const [ready, setReady] = React.useState(false);
   React.useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", fn, {
       passive: true
     });
     return () => window.removeEventListener("scroll", fn);
+  }, []);
+  React.useEffect(() => {
+    const t = setTimeout(() => setReady(true), 80);
+    return () => clearTimeout(t);
   }, []);
   const goTo = id => {
     const el = document.getElementById(id);
@@ -299,7 +304,7 @@ function Navigation({
     });
   };
   return /*#__PURE__*/React.createElement("nav", {
-    className: "nav" + (scrolled ? " nav--scrolled" : "")
+    className: "nav" + (scrolled ? " nav--scrolled" : "") + (ready ? " nav--ready" : "")
   }, /*#__PURE__*/React.createElement("a", {
     className: "nav-logo",
     onClick: () => window.scrollTo({
@@ -310,9 +315,12 @@ function Navigation({
     className: "nav-right"
   }, /*#__PURE__*/React.createElement("div", {
     className: "nav-links"
-  }, NAV_LINKS.map(l => /*#__PURE__*/React.createElement("button", {
+  }, NAV_LINKS.map((l, i) => /*#__PURE__*/React.createElement("button", {
     key: l.id,
     className: "nav-link" + (active === l.id ? " nav-link--active" : ""),
+    style: {
+      "--nav-i": i
+    },
     onClick: () => goTo(l.id)
   }, l.label))), /*#__PURE__*/React.createElement(Button, {
     variant: "outline",
@@ -400,7 +408,7 @@ function HeroSection() {
       go("dashboard");
     }
   }, "Contact me")))), /*#__PURE__*/React.createElement("div", {
-    className: "scroll-hint",
+    className: "scroll-hint scroll-hint--float",
     style: {
       position: "relative",
       zIndex: 2,
@@ -443,14 +451,16 @@ function AboutSection() {
     delay: 0.34
   }, /*#__PURE__*/React.createElement("div", {
     className: "skills-grid"
-  }, SKILLS.map((s, i) => /*#__PURE__*/React.createElement(Tag, {
-    key: i
-  }, s))))), /*#__PURE__*/React.createElement("div", {
+  }, SKILLS.map((s, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
+    key: i,
+    delay: i * 0.045,
+    className: "skill-motion"
+  }, /*#__PURE__*/React.createElement(Tag, null, s)))))), /*#__PURE__*/React.createElement("div", {
     className: "about-right"
   }, /*#__PURE__*/React.createElement(ScrollReveal, {
     delay: 0.28
   }, /*#__PURE__*/React.createElement("div", {
-    className: "about-portrait-wrap"
+    className: "about-portrait-wrap motion-portrait"
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: "about-portrait",
     shape: "rect",
@@ -492,7 +502,8 @@ function Grid({
     }
   }, items.map((it, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: it.id,
-    delay: i * 0.11
+    delay: i * 0.11,
+    className: "motion-tile"
   }, /*#__PURE__*/React.createElement(GalleryCard, {
     title: it.title,
     label: it.label,
@@ -584,7 +595,8 @@ function VideoSection({
     className: "video-grid"
   }, VIDEOS.map((v, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: v.id,
-    delay: i * 0.14
+    delay: i * 0.14,
+    className: "motion-tile"
   }, /*#__PURE__*/React.createElement(VideoCard, {
     title: v.title,
     desc: v.desc,
@@ -628,15 +640,21 @@ function Footer() {
   return /*#__PURE__*/React.createElement("footer", {
     className: "footer",
     id: "footer"
-  }, /*#__PURE__*/React.createElement(ScrollReveal, null, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
     className: "footer-inner"
+  }, /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0,
+    className: "footer-motion"
   }, /*#__PURE__*/React.createElement("div", {
     className: "footer-left"
   }, /*#__PURE__*/React.createElement("span", {
     className: "footer-name"
   }, "Chet Mutaphon"), /*#__PURE__*/React.createElement("span", {
     className: "footer-copy"
-  }, "\xA9 2026 All rights reserved.")), /*#__PURE__*/React.createElement("div", {
+  }, "\xA9 2026 All rights reserved."))), /*#__PURE__*/React.createElement(ScrollReveal, {
+    delay: 0.12,
+    className: "footer-motion"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "footer-contact"
   }, /*#__PURE__*/React.createElement("a", {
     href: "mailto:chetmutaphon@gmail.com",
