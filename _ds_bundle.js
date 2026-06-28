@@ -371,11 +371,48 @@ Object.assign(__ds_scope, { TimelineCard });
 
 // components/portfolio/VideoCard.jsx
 try { (() => {
-/**
- * VideoCard — a 16:9 thumbnail with a stroked play glyph over the brand's
- * faint diagonal hatch, plus a title + description footer. Lifts on hover;
- * the play glyph brightens and scales.
- */
+function VideoPreview({
+  src
+}) {
+  const ref = React.useRef(null);
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => {
+    setFailed(false);
+    const video = ref.current;
+    if (!video) return;
+    const showFrame = () => {
+      try {
+        if (video.readyState >= 1) {
+          video.currentTime = Math.min(0.8, Math.max(0, (video.duration || 1) * 0.04));
+        }
+      } catch (_) {}
+    };
+    const onError = () => setFailed(true);
+    video.addEventListener("loadeddata", showFrame);
+    video.addEventListener("error", onError);
+    return () => {
+      video.removeEventListener("loadeddata", showFrame);
+      video.removeEventListener("error", onError);
+    };
+  }, [src]);
+  if (failed) return null;
+  return /*#__PURE__*/React.createElement("video", {
+    ref: ref,
+    src: src,
+    muted: true,
+    playsInline: true,
+    preload: "metadata",
+    style: {
+      position: "absolute",
+      inset: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      pointerEvents: "none",
+      background: "#111"
+    }
+  });
+}
 function VideoCard({
   title,
   desc,
@@ -402,27 +439,18 @@ function VideoCard({
       ...style
     }
   }, /*#__PURE__*/React.createElement("div", {
+    className: "video-card-media",
     style: {
       aspectRatio,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       position: "relative",
-      background: hasMedia ? undefined : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)"
-    }
-  }, preview && /*#__PURE__*/React.createElement("video", {
-    src: preview,
-    muted: true,
-    playsInline: true,
-    preload: "metadata",
-    style: {
-      position: "absolute",
-      inset: 0,
       width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      pointerEvents: "none"
+      background: hasMedia ? "#111" : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)"
     }
+  }, preview && /*#__PURE__*/React.createElement(VideoPreview, {
+    src: preview
   }), !preview && thumbnail && /*#__PURE__*/React.createElement("img", {
     src: thumbnail,
     alt: title,
@@ -436,6 +464,7 @@ function VideoCard({
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
+      zIndex: 1,
       color: hasMedia ? "#fff" : "var(--text)",
       opacity: hover ? 0.8 : hasMedia ? 0.9 : 0.3,
       transform: hover ? "scale(1.08)" : "scale(1)",
@@ -1897,10 +1926,13 @@ function VideoModal({
   }, /*#__PURE__*/React.createElement("div", {
     className: "video-embed"
   }, item.url ? /*#__PURE__*/React.createElement("video", {
+    key: item.url,
     src: item.url,
     controls: true,
     autoPlay: true,
+    muted: true,
     playsInline: true,
+    preload: "auto",
     className: "video-player"
   }) : /*#__PURE__*/React.createElement("iframe", {
     src: `https://player.vimeo.com/video/${item.vimeoId}?autoplay=1&title=0&byline=0&portrait=0`,

@@ -761,10 +761,13 @@ function VideoModal({
   }, /*#__PURE__*/React.createElement("div", {
     className: "video-embed"
   }, item.url ? /*#__PURE__*/React.createElement("video", {
+    key: item.url,
     src: item.url,
     controls: true,
     autoPlay: true,
+    muted: true,
     playsInline: true,
+    preload: "auto",
     className: "video-player"
   }) : /*#__PURE__*/React.createElement("iframe", {
     src: `https://player.vimeo.com/video/${item.vimeoId}?autoplay=1&title=0&byline=0&portrait=0`,

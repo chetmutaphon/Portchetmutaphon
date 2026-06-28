@@ -1,5 +1,54 @@
 import React from "react";
 
+function VideoPreview({ src }) {
+  const ref = React.useRef(null);
+  const [failed, setFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    setFailed(false);
+    const video = ref.current;
+    if (!video) return;
+
+    const showFrame = () => {
+      try {
+        if (video.readyState >= 1) {
+          video.currentTime = Math.min(0.8, Math.max(0, (video.duration || 1) * 0.04));
+        }
+      } catch (_) {}
+    };
+
+    const onError = () => setFailed(true);
+
+    video.addEventListener("loadeddata", showFrame);
+    video.addEventListener("error", onError);
+    return () => {
+      video.removeEventListener("loadeddata", showFrame);
+      video.removeEventListener("error", onError);
+    };
+  }, [src]);
+
+  if (failed) return null;
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      muted
+      playsInline
+      preload="metadata"
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        pointerEvents: "none",
+        background: "#111",
+      }}
+    />
+  );
+}
+
 /**
  * VideoCard — a 16:9 thumbnail with a stroked play glyph over the brand's
  * faint diagonal hatch, plus a title + description footer. Lifts on hover;
@@ -8,6 +57,7 @@ import React from "react";
 export function VideoCard({ title, desc, thumbnail, preview, onClick, style = {}, aspectRatio = "16/9" }) {
   const [hover, setHover] = React.useState(false);
   const hasMedia = !!(thumbnail || preview);
+
   return (
     <div
       onClick={onClick}
@@ -25,26 +75,20 @@ export function VideoCard({ title, desc, thumbnail, preview, onClick, style = {}
       }}
     >
       <div
+        className="video-card-media"
         style={{
           aspectRatio,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
+          width: "100%",
           background: hasMedia
-            ? undefined
+            ? "#111"
             : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)",
         }}
       >
-        {preview && (
-          <video
-            src={preview}
-            muted
-            playsInline
-            preload="metadata"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
-          />
-        )}
+        {preview && <VideoPreview src={preview} />}
         {!preview && thumbnail && (
           <img
             src={thumbnail}
@@ -55,6 +99,7 @@ export function VideoCard({ title, desc, thumbnail, preview, onClick, style = {}
         <div
           style={{
             position: "relative",
+            zIndex: 1,
             color: hasMedia ? "#fff" : "var(--text)",
             opacity: hover ? 0.8 : hasMedia ? 0.9 : 0.3,
             transform: hover ? "scale(1.08)" : "scale(1)",

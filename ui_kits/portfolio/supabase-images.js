@@ -131,7 +131,7 @@
           }
 
           const items = data
-            .filter((f) => VIDEO_EXT.test(f.name))
+            .filter((f) => VIDEO_EXT.test(f.name) && /\.(mp4|webm|m4v|ogg)$/i.test(f.name))
             .map((f) => ({
               id: `${folder}/${f.name}`,
               title: titleFromFile(f.name),
