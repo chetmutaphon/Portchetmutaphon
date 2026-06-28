@@ -1594,6 +1594,8 @@ function AboutSection() {
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: "about-portrait",
     shape: "rect",
+    fit: "contain",
+    position: "50% 50%",
     placeholder: "Drop a portrait photo",
     src: profileUrl || undefined
   })))))));
