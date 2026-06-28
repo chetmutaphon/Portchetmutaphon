@@ -1,6 +1,17 @@
 // Fetch gallery images from a single Supabase Storage bucket with per-section folders
 // (artwork, photography, socialmedia).
 (function () {
+  const IMAGE_EXT = /\.(jpg|jpeg|png|webp|gif|heic|heif|avif)$/i;
+
+  function storageImageUrl(bucket, folder, fileName) {
+    const path = `${bucket}/${folder}/${encodeURIComponent(fileName)}`;
+    const base = window.__SUPABASE_URL;
+    if (/\.(heic|heif)$/i.test(fileName)) {
+      return `${base}/storage/v1/render/image/public/${path}?width=1600&format=origin`;
+    }
+    return `${base}/storage/v1/object/public/${path}`;
+  }
+
   function useSupabaseImages(folder) {
     const [images, setImages] = React.useState([]);
     const [loading, setLoading] = React.useState(!!window.__supabase);
@@ -26,13 +37,13 @@
           }
 
           const urls = data
-            .filter((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name))
+            .filter((f) => IMAGE_EXT.test(f.name))
             .map((f, i) => ({
               id: `${folder}/${f.name}`,
               title: f.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
               label: folder.toUpperCase(),
               hue: (i * 40) % 360,
-              img: `${window.__SUPABASE_URL}/storage/v1/object/public/${bucket}/${folder}/${encodeURIComponent(f.name)}`,
+              img: storageImageUrl(bucket, folder, f.name),
             }));
 
           setImages(urls);
@@ -64,11 +75,9 @@
         .list(folder, { limit: 10, sortBy: { column: "created_at", order: "desc" } })
         .then(({ data, error }) => {
           if (cancelled || error || !data) return;
-          const file = data.find((f) => /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name));
+          const file = data.find((f) => IMAGE_EXT.test(f.name));
           if (!file) return;
-          setUrl(
-            `${window.__SUPABASE_URL}/storage/v1/object/public/${bucket}/${folder}/${encodeURIComponent(file.name)}`
-          );
+          setUrl(storageImageUrl(bucket, folder, file.name));
         });
 
       return () => {
