@@ -15,6 +15,12 @@
     return storagePublicUrl(bucket, folder, fileName);
   }
 
+  function storageProfileUrl(bucket, folder, fileName) {
+    const path = `${bucket}/${folder}/${encodeURIComponent(fileName)}`;
+    const base = window.__SUPABASE_URL;
+    return `${base}/storage/v1/render/image/public/${path}?width=900&height=1200&resize=cover&format=origin`;
+  }
+
   function titleFromFile(name) {
     return name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   }
@@ -84,7 +90,10 @@
           if (cancelled || error || !data) return;
           const file = data.find((f) => IMAGE_EXT.test(f.name));
           if (!file) return;
-          setUrl(storageImageUrl(bucket, folder, file.name));
+          const url = folder === "profile"
+            ? storageProfileUrl(bucket, folder, file.name)
+            : storageImageUrl(bucket, folder, file.name);
+          setUrl(url);
         });
 
       return () => {

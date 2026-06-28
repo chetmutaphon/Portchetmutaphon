@@ -429,12 +429,20 @@ body {
 
 .about-portrait-wrap {
   width: 100%;
-  max-width: 320px;
+  max-width: 360px;
   margin-inline: auto;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--bg-alt);
+}
+
+.about-portrait-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 30%;
 }
 
 .about-portrait-wrap image-slot {

@@ -468,13 +468,14 @@ function AboutSection() {
     delay: 0.28
   }, /*#__PURE__*/React.createElement("div", {
     className: "about-portrait-wrap motion-portrait"
-  }, /*#__PURE__*/React.createElement("image-slot", {
+  }, profileUrl ? /*#__PURE__*/React.createElement("img", {
+    src: profileUrl,
+    alt: "Chet Mutaphon",
+    className: "about-portrait-img"
+  }) : /*#__PURE__*/React.createElement("image-slot", {
     id: "about-portrait",
     shape: "rect",
-    fit: "contain",
-    position: "50% 50%",
-    placeholder: "Drop a portrait photo",
-    src: profileUrl || undefined
+    placeholder: "Drop a portrait photo"
   })))))));
 }
 function ExperienceSection() {

@@ -1604,13 +1604,14 @@ function AboutSection() {
     delay: 0.28
   }, /*#__PURE__*/React.createElement("div", {
     className: "about-portrait-wrap motion-portrait"
-  }, /*#__PURE__*/React.createElement("image-slot", {
+  }, profileUrl ? /*#__PURE__*/React.createElement("img", {
+    src: profileUrl,
+    alt: "Chet Mutaphon",
+    className: "about-portrait-img"
+  }) : /*#__PURE__*/React.createElement("image-slot", {
     id: "about-portrait",
     shape: "rect",
-    fit: "contain",
-    position: "50% 50%",
-    placeholder: "Drop a portrait photo",
-    src: profileUrl || undefined
+    placeholder: "Drop a portrait photo"
   })))))));
 }
 function ExperienceSection() {
@@ -1727,6 +1728,14 @@ function PhotographySection({
 function VideoSection({
   onOpen
 }) {
+  const {
+    videos,
+    loading
+  } = window.useSupabaseVideos ? window.useSupabaseVideos("video") : {
+    videos: [],
+    loading: false
+  };
+  const items = videos.length > 0 ? videos : VIDEOS;
   return /*#__PURE__*/React.createElement("section", {
     className: "section section--alt",
     id: "videos",
@@ -1736,15 +1745,22 @@ function VideoSection({
   }, /*#__PURE__*/React.createElement(AnimatedSectionHead, {
     eyebrow: "Videographer",
     title: "Video Reel."
-  }), /*#__PURE__*/React.createElement("div", {
+  }), loading ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: 40,
+      color: "var(--text-secondary)"
+    }
+  }, "Loading...") : /*#__PURE__*/React.createElement("div", {
     className: "video-grid"
-  }, VIDEOS.map((v, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
+  }, items.map((v, i) => /*#__PURE__*/React.createElement(ScrollReveal, {
     key: v.id,
     delay: i * 0.14,
     className: "motion-tile"
   }, /*#__PURE__*/React.createElement(VideoCard, {
     title: v.title,
     desc: v.desc,
+    preview: v.url,
     aspectRatio: "9/16",
     onClick: () => onOpen(v)
   }))))));
@@ -1880,7 +1896,13 @@ function VideoModal({
     onClick: e => e.stopPropagation()
   }, /*#__PURE__*/React.createElement("div", {
     className: "video-embed"
-  }, /*#__PURE__*/React.createElement("iframe", {
+  }, item.url ? /*#__PURE__*/React.createElement("video", {
+    src: item.url,
+    controls: true,
+    autoPlay: true,
+    playsInline: true,
+    className: "video-player"
+  }) : /*#__PURE__*/React.createElement("iframe", {
     src: `https://player.vimeo.com/video/${item.vimeoId}?autoplay=1&title=0&byline=0&portrait=0`,
     frameBorder: "0",
     allow: "autoplay; fullscreen; picture-in-picture",
