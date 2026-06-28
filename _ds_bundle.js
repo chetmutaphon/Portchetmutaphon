@@ -382,11 +382,13 @@ function VideoCard({
   title,
   desc,
   thumbnail,
+  preview,
   onClick,
   style = {},
   aspectRatio = "16/9"
 }) {
   const [hover, setHover] = React.useState(false);
+  const hasMedia = !!(thumbnail || preview);
   return /*#__PURE__*/React.createElement("div", {
     onClick: onClick,
     onMouseEnter: () => setHover(true),
@@ -408,9 +410,22 @@ function VideoCard({
       alignItems: "center",
       justifyContent: "center",
       position: "relative",
-      background: thumbnail ? undefined : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)"
+      background: hasMedia ? undefined : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)"
     }
-  }, thumbnail && /*#__PURE__*/React.createElement("img", {
+  }, preview && /*#__PURE__*/React.createElement("video", {
+    src: preview,
+    muted: true,
+    playsInline: true,
+    preload: "metadata",
+    style: {
+      position: "absolute",
+      inset: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      pointerEvents: "none"
+    }
+  }), !preview && thumbnail && /*#__PURE__*/React.createElement("img", {
     src: thumbnail,
     alt: title,
     style: {
@@ -423,8 +438,8 @@ function VideoCard({
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
-      color: thumbnail ? "#fff" : "var(--text)",
-      opacity: hover ? 0.8 : thumbnail ? 0.9 : 0.3,
+      color: hasMedia ? "#fff" : "var(--text)",
+      opacity: hover ? 0.8 : hasMedia ? 0.9 : 0.3,
       transform: hover ? "scale(1.08)" : "scale(1)",
       transition: "all 0.35s ease"
     }

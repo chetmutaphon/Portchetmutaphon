@@ -5,8 +5,9 @@ import React from "react";
  * faint diagonal hatch, plus a title + description footer. Lifts on hover;
  * the play glyph brightens and scales.
  */
-export function VideoCard({ title, desc, thumbnail, onClick, style = {}, aspectRatio = "16/9" }) {
+export function VideoCard({ title, desc, thumbnail, preview, onClick, style = {}, aspectRatio = "16/9" }) {
   const [hover, setHover] = React.useState(false);
+  const hasMedia = !!(thumbnail || preview);
   return (
     <div
       onClick={onClick}
@@ -30,12 +31,21 @@ export function VideoCard({ title, desc, thumbnail, onClick, style = {}, aspectR
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          background: thumbnail
+          background: hasMedia
             ? undefined
             : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)",
         }}
       >
-        {thumbnail && (
+        {preview && (
+          <video
+            src={preview}
+            muted
+            playsInline
+            preload="metadata"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+          />
+        )}
+        {!preview && thumbnail && (
           <img
             src={thumbnail}
             alt={title}
@@ -45,8 +55,8 @@ export function VideoCard({ title, desc, thumbnail, onClick, style = {}, aspectR
         <div
           style={{
             position: "relative",
-            color: thumbnail ? "#fff" : "var(--text)",
-            opacity: hover ? 0.8 : thumbnail ? 0.9 : 0.3,
+            color: hasMedia ? "#fff" : "var(--text)",
+            opacity: hover ? 0.8 : hasMedia ? 0.9 : 0.3,
             transform: hover ? "scale(1.08)" : "scale(1)",
             transition: "all 0.35s ease",
           }}

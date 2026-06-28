@@ -1,15 +1,22 @@
-// Fetch gallery images from a single Supabase Storage bucket with per-section folders
-// (artwork, photography, socialmedia).
+// Fetch gallery images and videos from a single Supabase Storage bucket.
 (function () {
   const IMAGE_EXT = /\.(jpg|jpeg|png|webp|gif|heic|heif|avif)$/i;
+  const VIDEO_EXT = /\.(mp4|webm|mov|m4v|ogg)$/i;
+
+  function storagePublicUrl(bucket, folder, fileName) {
+    const path = `${bucket}/${folder}/${encodeURIComponent(fileName)}`;
+    return `${window.__SUPABASE_URL}/storage/v1/object/public/${path}`;
+  }
 
   function storageImageUrl(bucket, folder, fileName) {
-    const path = `${bucket}/${folder}/${encodeURIComponent(fileName)}`;
-    const base = window.__SUPABASE_URL;
     if (/\.(heic|heif)$/i.test(fileName)) {
-      return `${base}/storage/v1/render/image/public/${path}?width=1600&format=origin`;
+      return `${window.__SUPABASE_URL}/storage/v1/render/image/public/${bucket}/${folder}/${encodeURIComponent(fileName)}?width=1600&format=origin`;
     }
-    return `${base}/storage/v1/object/public/${path}`;
+    return storagePublicUrl(bucket, folder, fileName);
+  }
+
+  function titleFromFile(name) {
+    return name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   }
 
   function useSupabaseImages(folder) {
@@ -40,7 +47,7 @@
             .filter((f) => IMAGE_EXT.test(f.name))
             .map((f, i) => ({
               id: `${folder}/${f.name}`,
-              title: f.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+              title: titleFromFile(f.name),
               label: folder.toUpperCase(),
               hue: (i * 40) % 360,
               img: storageImageUrl(bucket, folder, f.name),
@@ -89,4 +96,51 @@
   }
 
   window.useSupabaseSlotImage = useSupabaseSlotImage;
+
+  function useSupabaseVideos(folder) {
+    const [videos, setVideos] = React.useState([]);
+    const [loading, setLoading] = React.useState(!!window.__supabase);
+    const bucket = window.__SUPABASE_BUCKET || "portfolio";
+
+    React.useEffect(() => {
+      if (!window.__supabase) {
+        setLoading(false);
+        return;
+      }
+
+      let cancelled = false;
+      setLoading(true);
+
+      window.__supabase.storage
+        .from(bucket)
+        .list(folder, { limit: 50, sortBy: { column: "created_at", order: "desc" } })
+        .then(({ data, error }) => {
+          if (cancelled) return;
+          if (error || !data) {
+            setLoading(false);
+            return;
+          }
+
+          const items = data
+            .filter((f) => VIDEO_EXT.test(f.name))
+            .map((f) => ({
+              id: `${folder}/${f.name}`,
+              title: titleFromFile(f.name),
+              desc: "Video reel",
+              url: storagePublicUrl(bucket, folder, f.name),
+            }));
+
+          setVideos(items);
+          setLoading(false);
+        });
+
+      return () => {
+        cancelled = true;
+      };
+    }, [folder, bucket]);
+
+    return { videos, loading };
+  }
+
+  window.useSupabaseVideos = useSupabaseVideos;
 })();
