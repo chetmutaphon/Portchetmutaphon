@@ -363,6 +363,9 @@ function HeroSection() {
       overflow: "hidden"
     }
   }, /*#__PURE__*/React.createElement("div", {
+    className: "hero-bg-motion",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("div", {
     className: "hero-parallax-layer"
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: "hero-bg",
@@ -374,13 +377,8 @@ function HeroSection() {
       height: "100%"
     }
   })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      position: "absolute",
-      inset: 0,
-      background: "rgba(0,0,0,0.45)",
-      zIndex: 1,
-      pointerEvents: "none"
-    }
+    className: "hero-overlay",
+    "aria-hidden": "true"
   }), /*#__PURE__*/React.createElement("div", {
     className: "hero-content",
     style: {
