@@ -399,11 +399,26 @@ body {
 }
 
 .about-text {
+  font-family: var(--font-body);
   font-size: var(--text-lg);
   color: var(--text-secondary);
   line-height: var(--lh-body);
   margin: 24px 0 32px;
   max-width: 560px;
+}
+
+.timeline-desc {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+.timeline-desc * {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 .skills-grid {

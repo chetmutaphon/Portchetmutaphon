@@ -63,10 +63,8 @@ export function TimelineCard({ role, company, period, desc, style = {} }) {
         {company}
       </p>
       <p
+        className="timeline-desc"
         style={{
-          fontSize: 15,
-          lineHeight: 1.65,
-          color: "var(--text-secondary)",
           margin: 0,
         }}
       >

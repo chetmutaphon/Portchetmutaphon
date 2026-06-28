@@ -360,10 +360,8 @@ function TimelineCard({
       fontWeight: 500
     }
   }, company), /*#__PURE__*/React.createElement("p", {
+    className: "timeline-desc",
     style: {
-      fontSize: 15,
-      lineHeight: 1.65,
-      color: "var(--text-secondary)",
       margin: 0
     }
   }, desc));
