@@ -403,6 +403,11 @@ body {
   justify-content: center;
 }
 
+.about-right > .scroll-reveal {
+  width: min(100%, 380px);
+  flex: 0 0 auto;
+}
+
 .about-text {
   font-family: var(--font-body);
   font-size: var(--text-lg);
@@ -434,7 +439,7 @@ body {
 
 .about-portrait-wrap {
   position: relative;
-  width: min(100%, 380px);
+  width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   overflow: hidden;
@@ -442,8 +447,6 @@ body {
 }
 
 .about-portrait-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
