@@ -398,6 +398,11 @@ body {
   align-items: start;
 }
 
+.about-right {
+  display: flex;
+  justify-content: center;
+}
+
 .about-text {
   font-family: var(--font-body);
   font-size: var(--text-lg);
@@ -428,9 +433,8 @@ body {
 }
 
 .about-portrait-wrap {
-  width: 100%;
-  max-width: 360px;
-  margin-inline: auto;
+  position: relative;
+  width: min(100%, 380px);
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   overflow: hidden;
@@ -438,11 +442,13 @@ body {
 }
 
 .about-portrait-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: center center;
 }
 
 .about-portrait-wrap image-slot {
