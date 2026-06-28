@@ -345,20 +345,9 @@ function TimelineCard({
       margin: 0
     }
   }, role), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: "var(--text-secondary)",
-      fontWeight: 500,
-      letterSpacing: "0.02em"
-    }
+    className: "timeline-period"
   }, period)), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontSize: 14,
-      color: "var(--accent)",
-      marginBottom: 10,
-      marginTop: 0,
-      fontWeight: 500
-    }
+    className: "timeline-company"
   }, company), /*#__PURE__*/React.createElement("p", {
     className: "timeline-desc",
     style: {
@@ -500,6 +489,7 @@ function VideoCard({
       marginBottom: 4
     }
   }, title), /*#__PURE__*/React.createElement("p", {
+    className: "video-card-desc",
     style: {
       fontSize: 13,
       color: "var(--text-secondary)",

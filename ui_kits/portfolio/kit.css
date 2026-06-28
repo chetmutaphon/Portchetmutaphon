@@ -411,7 +411,7 @@ body {
 }
 
 .about-text {
-  font-family: var(--font-body);
+  font-family: var(--font-body) !important;
   font-size: var(--text-lg);
   color: var(--text-secondary);
   line-height: var(--lh-body);
@@ -419,18 +419,48 @@ body {
   max-width: 560px;
 }
 
+.about-text * {
+  font-family: inherit !important;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 .timeline-desc {
-  font-family: var(--font-body);
+  font-family: var(--font-body) !important;
   font-size: var(--text-lg);
   line-height: var(--lh-body);
   color: var(--text-secondary);
 }
 
 .timeline-desc * {
-  font-family: inherit;
+  font-family: inherit !important;
   font-size: inherit;
   line-height: inherit;
   color: inherit;
+}
+
+.timeline-company {
+  font-family: var(--font-body) !important;
+  font-size: 14px;
+  color: var(--accent);
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+.timeline-period {
+  font-family: var(--font-body) !important;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.hero-tagline,
+.hero-title,
+.footer-copy,
+.video-grid p,
+.video-card-desc {
+  font-family: var(--font-body) !important;
 }
 
 .skills-grid {

@@ -40,26 +40,11 @@ export function TimelineCard({ role, company, period, desc, style = {} }) {
         >
           {role}
         </h3>
-        <span
-          style={{
-            fontSize: 13,
-            color: "var(--text-secondary)",
-            fontWeight: 500,
-            letterSpacing: "0.02em",
-          }}
-        >
+        <span className="timeline-period">
           {period}
         </span>
       </div>
-      <p
-        style={{
-          fontSize: 14,
-          color: "var(--accent)",
-          marginBottom: 10,
-          marginTop: 0,
-          fontWeight: 500,
-        }}
-      >
+      <p className="timeline-company">
         {company}
       </p>
       <p

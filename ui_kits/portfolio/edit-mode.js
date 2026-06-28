@@ -17,10 +17,30 @@
     return result;
   }
 
+  function normalizeCopyFonts(el) {
+    if (!el) return;
+    el.style.removeProperty("font-family");
+    el.querySelectorAll("*").forEach((node) => {
+      node.style.removeProperty("font-family");
+      if (node.tagName === "FONT") node.removeAttribute("face");
+    });
+  }
+
   function applyPersistedEdits() {
     getEditableElements().forEach(({ el, key }) => {
       const saved = localStorage.getItem(key);
-      if (saved) el.innerHTML = saved;
+      if (!saved) return;
+      el.innerHTML = saved;
+      if (
+        el.classList.contains("about-text") ||
+        el.classList.contains("timeline-desc") ||
+        el.classList.contains("timeline-company") ||
+        el.classList.contains("hero-tagline") ||
+        el.classList.contains("hero-title") ||
+        el.classList.contains("footer-copy")
+      ) {
+        normalizeCopyFonts(el);
+      }
     });
   }
 

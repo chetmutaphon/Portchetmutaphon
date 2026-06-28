@@ -125,7 +125,7 @@ export function VideoCard({ title, desc, thumbnail, preview, onClick, style = {}
         >
           {title}
         </h4>
-        <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }}>{desc}</p>
+        <p style={{ fontSize: 13, color: "var(--text-secondary)", margin: 0 }} className="video-card-desc">{desc}</p>
       </div>
     </div>
   );
