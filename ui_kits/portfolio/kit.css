@@ -538,8 +538,14 @@ body {
   min-width: 0;
 }
 
+.video-grid .motion-tile > .scroll-reveal,
+.video-grid .scroll-reveal {
+  width: 100%;
+}
+
 .video-card-media {
   background: #111;
+  min-height: 200px;
 }
 
 /* Footer */

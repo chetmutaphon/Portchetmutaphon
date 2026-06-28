@@ -361,36 +361,49 @@ Object.assign(__ds_scope, { TimelineCard });
 // components/portfolio/VideoCard.jsx
 try { (() => {
 function VideoPreview({
-  src
+  src,
+  hover
 }) {
   const ref = React.useRef(null);
-  const [failed, setFailed] = React.useState(false);
+  const [ready, setReady] = React.useState(false);
   React.useEffect(() => {
-    setFailed(false);
+    setReady(false);
     const video = ref.current;
     if (!video) return;
-    const showFrame = () => {
+    const primeFrame = () => {
       try {
-        if (video.readyState >= 1) {
-          video.currentTime = Math.min(0.8, Math.max(0, (video.duration || 1) * 0.04));
+        if (video.readyState >= 2) {
+          video.currentTime = Math.min(1.2, Math.max(0.1, (video.duration || 2) * 0.05));
         }
       } catch (_) {}
     };
-    const onError = () => setFailed(true);
-    video.addEventListener("loadeddata", showFrame);
-    video.addEventListener("error", onError);
-    return () => {
-      video.removeEventListener("loadeddata", showFrame);
-      video.removeEventListener("error", onError);
+    const onCanPlay = () => {
+      setReady(true);
+      primeFrame();
     };
+    video.addEventListener("canplay", onCanPlay);
+    video.load();
+    return () => video.removeEventListener("canplay", onCanPlay);
   }, [src]);
-  if (failed) return null;
+  React.useEffect(() => {
+    const video = ref.current;
+    if (!video || !ready) return;
+    if (hover) {
+      video.play().catch(() => {});
+      return;
+    }
+    video.pause();
+    try {
+      video.currentTime = Math.min(1.2, Math.max(0.1, (video.duration || 2) * 0.05));
+    } catch (_) {}
+  }, [hover, ready]);
   return /*#__PURE__*/React.createElement("video", {
     ref: ref,
     src: src,
     muted: true,
+    loop: true,
     playsInline: true,
-    preload: "metadata",
+    preload: "auto",
     style: {
       position: "absolute",
       inset: 0,
@@ -398,7 +411,9 @@ function VideoPreview({
       height: "100%",
       objectFit: "cover",
       pointerEvents: "none",
-      background: "#111"
+      background: "#111",
+      opacity: ready ? 1 : 0.35,
+      transition: "opacity 0.35s ease"
     }
   });
 }
@@ -439,7 +454,8 @@ function VideoCard({
       background: hasMedia ? "#111" : "repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(0,0,0,0.03) 12px, rgba(0,0,0,0.03) 24px), var(--card)"
     }
   }, preview && /*#__PURE__*/React.createElement(VideoPreview, {
-    src: preview
+    src: preview,
+    hover: hover
   }), !preview && thumbnail && /*#__PURE__*/React.createElement("img", {
     src: thumbnail,
     alt: title,
@@ -455,9 +471,10 @@ function VideoCard({
       position: "relative",
       zIndex: 1,
       color: hasMedia ? "#fff" : "var(--text)",
-      opacity: hover ? 0.8 : hasMedia ? 0.9 : 0.3,
+      opacity: hover ? 0.85 : hasMedia ? 0.95 : 0.3,
       transform: hover ? "scale(1.08)" : "scale(1)",
-      transition: "all 0.35s ease"
+      transition: "all 0.35s ease",
+      textShadow: hasMedia ? "0 2px 12px rgba(0,0,0,0.55)" : "none"
     }
   }, /*#__PURE__*/React.createElement("svg", {
     width: "48",
