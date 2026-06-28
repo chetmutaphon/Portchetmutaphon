@@ -170,6 +170,71 @@ body {
   );
 }
 
+/* Light text on dark hero motion background */
+.hero .hero-name {
+  color: #fff !important;
+}
+
+.hero .hero-title {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.hero .hero-tagline {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hero .scroll-hint-line {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hero .scroll-hint-line::after {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.hero-cta > a {
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.58) !important;
+  background: transparent !important;
+}
+
+.hero-cta > a:hover {
+  background: #fff !important;
+  color: #050505 !important;
+  border-color: #fff !important;
+}
+
+/* Nav over hero — before glass bar on scroll */
+.nav:not(.nav--scrolled) .nav-logo {
+  color: #fff;
+}
+
+.nav:not(.nav--scrolled) .nav-link {
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.nav:not(.nav--scrolled) .nav-link:hover,
+.nav:not(.nav--scrolled) .nav-link--active {
+  color: #fff;
+}
+
+.nav:not(.nav--scrolled) .nav-link::after {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.nav:not(.nav--scrolled) .nav-right > a,
+.nav:not(.nav--scrolled) .nav-right > button {
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+}
+
+.nav:not(.nav--scrolled) .nav-right > a:hover,
+.nav:not(.nav--scrolled) .nav-right > button:hover {
+  background: #fff !important;
+  color: #050505 !important;
+  border-color: #fff !important;
+}
+
 /* Hero parallax layer */
 .hero-parallax-layer {
   position: absolute;
