@@ -11,7 +11,7 @@ const {
 const IMG = window.__PORTFOLIO_IMG_BASE || "../../assets/imagery/";
 
 // ============ DATA ============
-const SKILLS = ["Graphic Design", "Photography", "Videography", "Marketing Strategy", "Social Media Management", "Adobe Creative Suite", "Content Creation", "Brand Development", "Art Direction", "Motion Graphics", "Print Design", "Analytics"];
+const SKILLS = ["Graphic Design", "Photography", "Videography", "Marketing Strategy", "Social Media Management", "Adobe Creative Suite", "Content Creation", "Brand Development", "Art Direction", "Motion Graphics", "Print Design", "Analytics", "AI Generative", "AI Agentic"];
 const EXPERIENCES = [{
   role: "Marketing Executive",
   company: "Renaissance Phuket Resort and Spa",
