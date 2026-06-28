@@ -1137,13 +1137,13 @@ const IMG = window.__PORTFOLIO_IMG_BASE || "../../assets/imagery/";
 const SKILLS = ["Graphic Design", "Photography", "Videography", "Marketing Strategy", "Social Media Management", "Adobe Creative Suite", "Content Creation", "Brand Development", "Art Direction", "Motion Graphics", "Print Design", "Analytics"];
 const EXPERIENCES = [{
   role: "Marketing Executive",
-  company: "Company Name",
-  period: "2023 — Present",
+  company: "Renaissance Phuket Resort and Spa",
+  period: "2025 — Present",
   desc: "Led integrated marketing campaigns and brand strategy across digital and print channels. Managed social media presence and content creation."
 }, {
   role: "Senior Graphic Designer",
-  company: "Studio Name",
-  period: "2021 — 2023",
+  company: "Nap's Coffee Roaster Ubonratchathani",
+  period: "2020 — 2025",
   desc: "Created visual identities, marketing materials, and digital content. Directed photoshoots and video productions for diverse clients."
 }];
 const ARTWORK = [{
@@ -1899,6 +1899,7 @@ Object.assign(window, {
   LoginModal,
   EditToolbar
 });
+
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/portfolio/sections.jsx", error: String((e && e.message) || e) }); }
 // ui_kits/portfolio/app.jsx
 try { (() => {
